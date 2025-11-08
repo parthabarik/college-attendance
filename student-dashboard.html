@@ -754,9 +754,27 @@
             for (const recordKey in records) {
               const record = records[recordKey];
 
-              // Skip if record doesn't have attendanceData array
-              if (!record.attendanceData || !Array.isArray(record.attendanceData)) {
-                continue;
+              // Handle both manual attendance (attendanceData array) and QR attendance (student object)
+              let studentRecord = null;
+              let isPresent = false;
+
+              if (record.attendanceData && Array.isArray(record.attendanceData)) {
+                // Manual attendance - find student in array
+                studentRecord = record.attendanceData.find(
+                  s => s && s.rollNo && s.rollNo.toLowerCase() === currentStudent.rollNo.toLowerCase()
+                );
+                if (studentRecord) {
+                  isPresent = studentRecord.status === "Present";
+                }
+              } else if (record.student && record.student.rollNo &&
+                record.student.rollNo.toLowerCase() === currentStudent.rollNo.toLowerCase()) {
+                // QR attendance - student object directly
+                studentRecord = record.student;
+                isPresent = true; // QR scan means present
+              }
+
+              if (!studentRecord) {
+                continue; // Skip if student not found in this record
               }
 
               const subject = record.subject || "Unknown";
@@ -764,18 +782,11 @@
                 attendanceSummary[subject] = { total: 0, present: 0, absent: 0 };
               }
 
-              // Find student record safely - using rollNo to match
-              const studentRecord = record.attendanceData.find(
-                s => s && s.rollNo && s.rollNo.toLowerCase() === currentStudent.rollNo.toLowerCase()
-              );
-
-              if (studentRecord) {
-                attendanceSummary[subject].total++;
-                if (studentRecord.status === "Present") {
-                  attendanceSummary[subject].present++;
-                } else {
-                  attendanceSummary[subject].absent++;
-                }
+              attendanceSummary[subject].total++;
+              if (isPresent) {
+                attendanceSummary[subject].present++;
+              } else {
+                attendanceSummary[subject].absent++;
               }
             }
           }

@@ -383,6 +383,7 @@
     let lastScannedCode = null;
     let lastScanTime = 0;
     let attendanceMarkedForSession = {}; // Track which sessions student has marked attendance for
+    let isProcessingQR = false; // Flag to prevent multiple simultaneous QR processing
     const SCAN_COOLDOWN = 3000; // 3 seconds cooldown between scans
 
     // Check if student is logged in
@@ -539,11 +540,19 @@
 
     // Handle detected QR code
     async function handleQRCodeDetected(qrData) {
+      // Prevent multiple simultaneous QR processing
+      if (isProcessingQR) {
+        return;
+      }
+
       // Prevent rapid repeated scans of the same code
       const now = Date.now();
       if (lastScannedCode === qrData && (now - lastScanTime) < SCAN_COOLDOWN) {
         return; // Skip if same code scanned within cooldown period
       }
+
+      // Set processing flag
+      isProcessingQR = true;
 
       try {
         // Validate student is logged in
@@ -653,6 +662,9 @@
           scannerActive = true;
           startQRDetection();
         }, 2000);
+      } finally {
+        // Reset processing flag
+        isProcessingQR = false;
       }
     }
 

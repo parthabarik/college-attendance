@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,7 @@
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    
+
     body {
       background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
       color: #333;
@@ -22,7 +23,7 @@
       padding: 20px;
       min-height: 100vh;
     }
-    
+
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -31,7 +32,7 @@
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
       overflow: hidden;
     }
-    
+
     .header {
       background: linear-gradient(135deg, #00c9a7 0%, #5a70d5 100%);
       color: white;
@@ -41,25 +42,25 @@
       align-items: center;
       flex-wrap: wrap;
     }
-    
+
     .header h1 {
       font-size: 24px;
       font-weight: 600;
     }
-    
+
     .user-info {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    
+
     .user-info img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
       border: 2px solid rgba(255, 255, 255, 0.5);
     }
-    
+
     .date-display {
       background: rgba(255, 255, 255, 0.2);
       padding: 8px 15px;
@@ -68,22 +69,22 @@
       text-align: center;
       min-width: 200px;
     }
-    
+
     .date-display .time {
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 2px;
     }
-    
+
     .date-display .date {
       font-size: 14px;
       opacity: 0.9;
     }
-    
+
     .main-content {
       padding: 25px 30px;
     }
-    
+
     .card {
       background: white;
       border-radius: 10px;
@@ -91,7 +92,7 @@
       margin-bottom: 25px;
       overflow: hidden;
     }
-    
+
     .card-header {
       background: #f8f9fa;
       padding: 15px 20px;
@@ -102,30 +103,30 @@
       justify-content: space-between;
       align-items: center;
     }
-    
+
     .card-body {
       padding: 20px;
     }
-    
+
     .form-row {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
       margin-bottom: 15px;
     }
-    
+
     .form-group {
       flex: 1;
       min-width: 200px;
     }
-    
+
     .form-group label {
       display: block;
       margin-bottom: 8px;
       font-weight: 500;
       color: #555;
     }
-    
+
     .form-control {
       width: 100%;
       padding: 12px 15px;
@@ -134,13 +135,13 @@
       font-size: 15px;
       transition: all 0.3s;
     }
-    
+
     .form-control:focus {
       outline: none;
       border-color: #00c9a7;
       box-shadow: 0 0 0 3px rgba(0, 201, 167, 0.2);
     }
-    
+
     .btn {
       padding: 12px 25px;
       border: none;
@@ -153,57 +154,57 @@
       justify-content: center;
       gap: 8px;
     }
-    
+
     .btn-primary {
       background: #00c9a7;
       color: white;
     }
-    
+
     .btn-primary:hover {
       background: #00b398;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0, 201, 167, 0.3);
     }
-    
+
     .btn-secondary {
       background: #5a70d5;
       color: white;
     }
-    
+
     .btn-secondary:hover {
       background: #4a60c0;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(90, 112, 213, 0.3);
     }
-    
+
     .btn-logout {
       background: #ff6b6b;
       color: white;
     }
-    
+
     .btn-logout:hover {
       background: #ff5252;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
     }
-    
+
     .btn-outline {
       background: transparent;
       color: #5a70d5;
       border: 1px solid #5a70d5;
     }
-    
+
     .btn-outline:hover {
       background: #f0f3ff;
     }
-    
+
     .action-buttons {
       display: flex;
       gap: 15px;
       margin-top: 25px;
       flex-wrap: wrap;
     }
-    
+
     .footer {
       text-align: center;
       padding: 20px;
@@ -211,7 +212,7 @@
       font-size: 14px;
       border-top: 1px solid #eee;
     }
-    
+
     /* QR Code Section */
     .qr-section {
       text-align: center;
@@ -220,7 +221,7 @@
       border-radius: 10px;
       margin: 20px 0;
     }
-    
+
     .qr-container {
       display: inline-block;
       background: white;
@@ -229,16 +230,16 @@
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       margin: 20px 0;
     }
-    
+
     #qrcode {
       width: 256px;
       height: 256px;
     }
-    
+
     .qr-info {
       margin-top: 20px;
     }
-    
+
     .qr-code-value {
       font-family: 'Courier New', monospace;
       font-size: 18px;
@@ -250,18 +251,18 @@
       display: inline-block;
       margin: 10px 0;
     }
-    
+
     .timer {
       font-size: 16px;
       color: #666;
       margin: 10px 0;
     }
-    
+
     .timer-value {
       font-weight: 600;
       color: #ff6b6b;
     }
-    
+
     .attendance-status {
       margin-top: 15px;
       padding: 10px;
@@ -270,18 +271,18 @@
       color: #2d5016;
       font-weight: 500;
     }
-    
+
     /* History Section */
     .history-section {
       margin-top: 30px;
     }
-    
+
     .history-table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 15px;
     }
-    
+
     .history-table th {
       background: #f8f9fa;
       padding: 12px;
@@ -290,37 +291,37 @@
       color: #444;
       border-bottom: 2px solid #eee;
     }
-    
+
     .history-table td {
       padding: 12px;
       border-bottom: 1px solid #eee;
     }
-    
+
     .history-table tr:nth-child(even) {
       background: #f9f9f9;
     }
-    
+
     .status-active {
       color: #00c9a7;
       font-weight: 600;
     }
-    
+
     .status-expired {
       color: #ff6b6b;
     }
-    
+
     .no-data {
       text-align: center;
       padding: 30px;
       color: #777;
     }
-    
+
     .loading {
       text-align: center;
       padding: 20px;
       color: #777;
     }
-    
+
     .status-message {
       padding: 12px;
       border-radius: 8px;
@@ -328,44 +329,44 @@
       text-align: center;
       display: none;
     }
-    
+
     .status-success {
       background: #d4edda;
       color: #155724;
       border: 1px solid #c3e6cb;
     }
-    
+
     .status-error {
       background: #f8d7da;
       color: #721c24;
       border: 1px solid #f5c6cb;
     }
-    
+
     @media (max-width: 768px) {
       .header {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
       }
-      
+
       .user-info {
         width: 100%;
         justify-content: flex-end;
       }
-      
+
       .form-row {
         flex-direction: column;
         gap: 15px;
       }
-      
+
       .action-buttons {
         flex-direction: column;
       }
-      
+
       .btn {
         width: 100%;
       }
-      
+
       #qrcode {
         width: 200px;
         height: 200px;
@@ -373,6 +374,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="header">
@@ -382,7 +384,9 @@
         <div class="date" id="currentDate">Loading...</div>
       </div>
       <div class="user-info">
-        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='40' r='30' fill='%2300c9a7'/><circle cx='50' cy='100' r='40' fill='%235a70d5'/></svg>" alt="Teacher">
+        <img
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='40' r='30' fill='%2300c9a7'/><circle cx='50' cy='100' r='40' fill='%235a70d5'/></svg>"
+          alt="Teacher">
         <span id="teacherName">Loading...</span>
       </div>
     </div>
@@ -405,7 +409,7 @@
                 <option value="EE">Electrical Engineering</option>
               </select>
             </div>
-            
+
             <div class="form-group">
               <label for="section"><i class="fas fa-users"></i> Section</label>
               <select class="form-control" id="section">
@@ -415,7 +419,7 @@
                 <option value="C">Section C</option>
               </select>
             </div>
-            
+
             <div class="form-group">
               <label for="subject"><i class="fas fa-book"></i> Subject</label>
               <select class="form-control" id="subject">
@@ -429,7 +433,7 @@
               </select>
             </div>
           </div>
-          
+
           <div class="form-row">
             <div class="form-group">
               <label for="periodNumber"><i class="fas fa-list-ol"></i> Period Number</label>
@@ -442,7 +446,7 @@
                 <option value="6">Period 6</option>
               </select>
             </div>
-            
+
             <div class="form-group">
               <label for="attendanceDuration"><i class="fas fa-clock"></i> Attendance Duration (minutes)</label>
               <select class="form-control" id="attendanceDuration">
@@ -451,12 +455,13 @@
                 <option value="15">15 minutes</option>
                 <option value="20">20 minutes</option>
                 <option value="30">30 minutes</option>
+                <option value="60">60 minutes</option>
               </select>
             </div>
           </div>
         </div>
       </div>
-      
+
       <div class="card">
         <div class="card-header">
           <span>Generate QR Code</span>
@@ -465,28 +470,29 @@
           <div class="qr-section" id="qrSection" style="display: none;">
             <h3><i class="fas fa-qrcode"></i> Live QR Code</h3>
             <p>Students should scan this QR code to mark attendance</p>
-            
+
             <div class="qr-container">
               <div id="qrcode"></div>
             </div>
-            
+
             <div class="qr-info">
               <div class="qr-code-value" id="qrCodeValue">Generating...</div>
               <div class="timer">
                 Code changes in: <span class="timer-value" id="timerValue">3s</span>
               </div>
               <div class="attendance-status" id="attendanceStatus">
-                <i class="fas fa-users"></i> 
+                <i class="fas fa-users"></i>
                 <span id="scannedCount">0</span> students have scanned this code
               </div>
             </div>
           </div>
-          
+
           <div class="action-buttons">
             <button class="btn btn-primary" id="startAttendanceBtn" onclick="startQRAttendance()">
               <i class="fas fa-play-circle"></i> Start QR Attendance
             </button>
-            <button class="btn btn-secondary" id="stopAttendanceBtn" onclick="stopQRAttendance()" style="display: none;">
+            <button class="btn btn-secondary" id="stopAttendanceBtn" onclick="stopQRAttendance()"
+              style="display: none;">
               <i class="fas fa-stop-circle"></i> Stop QR Attendance
             </button>
             <a href="teacher-dashboard.html" class="btn btn-outline">
@@ -496,11 +502,11 @@
               <i class="fas fa-sign-out-alt"></i> Logout
             </button>
           </div>
-          
+
           <div class="status-message" id="statusMessage"></div>
         </div>
       </div>
-      
+
       <div class="card">
         <div class="card-header">
           <span>Attendance History</span>
@@ -533,7 +539,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="footer">
       <p>TAT Attendance Management System © 2023 | QR Attendance</p>
     </div>
@@ -579,15 +585,15 @@
     // Update date and time in header
     function updateDateTime() {
       const now = new Date();
-      
+
       // Format time
       const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
       const timeString = now.toLocaleTimeString('en-US', timeOptions);
-      
+
       // Format date
       const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
       const dateString = now.toLocaleDateString('en-US', dateOptions);
-      
+
       document.getElementById('currentTime').textContent = timeString;
       document.getElementById('currentDate').textContent = dateString;
     }
@@ -602,19 +608,19 @@
     function generateQRCode(text) {
       const qrcodeContainer = document.getElementById('qrcode');
       qrcodeContainer.innerHTML = '';
-      
+
       // Create QR code using the simpler library
       const qr = qrcode(0, 'M');
       qr.addData(text);
       qr.make();
-      
+
       // Create image element
       const img = document.createElement('img');
       img.src = qr.createDataURL(10, 0);
       img.width = 256;
       img.height = 256;
       img.alt = 'Attendance QR Code';
-      
+
       qrcodeContainer.appendChild(img);
     }
 
@@ -657,20 +663,20 @@
       try {
         // Save session to Firebase
         await set(ref(db, `qrSessions/${currentSessionId}`), sessionData);
-        
+
         // Show QR section
         document.getElementById('qrSection').style.display = 'block';
         document.getElementById('startAttendanceBtn').style.display = 'none';
         document.getElementById('stopAttendanceBtn').style.display = 'inline-flex';
-        
+
         // Start QR code generation
         startQRCodeGeneration(currentSessionId, classKey, dateKey);
-        
+
         showStatus("QR Attendance session started successfully!", "success");
-        
+
         // Listen for scanned students
         listenForScannedStudents(currentSessionId);
-        
+
       } catch (error) {
         console.error("Error starting QR session:", error);
         showStatus("Error starting QR session: " + error.message, "error");
@@ -681,19 +687,19 @@
     function startQRCodeGeneration(sessionId, classKey, dateKey) {
       scannedStudents.clear();
       updateScannedCount();
-      
+
       // Generate first code immediately
       generateNewQRCode(sessionId, classKey, dateKey);
-      
+
       // Set up interval to change code every 3 seconds
       codeChangeInterval = setInterval(() => {
         generateNewQRCode(sessionId, classKey, dateKey);
       }, 3000);
-      
+
       // Set up timer display
       timerCount = 3;
       updateTimerDisplay();
-      
+
       const timerInterval = setInterval(() => {
         timerCount--;
         if (timerCount <= 0) {
@@ -701,7 +707,7 @@
         }
         updateTimerDisplay();
       }, 1000);
-      
+
       // Store timer interval to clear later
       window.timerInterval = timerInterval;
     }
@@ -709,7 +715,7 @@
     // Generate new QR code
     function generateNewQRCode(sessionId, classKey, dateKey) {
       currentQRCode = generateRandomCode();
-      
+
       // Create QR data object
       const qrData = {
         sessionId: sessionId,
@@ -719,16 +725,16 @@
         timestamp: new Date().toISOString(),
         expiresAt: new Date(Date.now() + 3000).toISOString() // 3 seconds validity
       };
-      
+
       // Convert to JSON string for QR code
       const qrDataString = JSON.stringify(qrData);
-      
+
       // Generate QR code
       generateQRCode(qrDataString);
-      
+
       // Update display
       document.getElementById('qrCodeValue').textContent = currentQRCode;
-      
+
       // Save current code to Firebase for validation
       set(ref(db, `qrSessions/${sessionId}/currentCode`), {
         code: currentQRCode,
@@ -750,7 +756,7 @@
     // Listen for scanned students
     function listenForScannedStudents(sessionId) {
       const scannedRef = ref(db, `qrSessions/${sessionId}/scannedStudents`);
-      
+
       onValue(scannedRef, (snapshot) => {
         if (snapshot.exists()) {
           const students = snapshot.val();
@@ -763,32 +769,32 @@
     // Stop QR Attendance Session
     async function stopQRAttendance() {
       if (!currentSessionId) return;
-      
+
       try {
         // Update session status
         await set(ref(db, `qrSessions/${currentSessionId}/status`), 'completed');
         await set(ref(db, `qrSessions/${currentSessionId}/endTime`), new Date().toISOString());
-        
+
         // Clear intervals
         clearInterval(codeChangeInterval);
         clearInterval(window.timerInterval);
-        
+
         // Hide QR section
         document.getElementById('qrSection').style.display = 'none';
         document.getElementById('startAttendanceBtn').style.display = 'inline-flex';
         document.getElementById('stopAttendanceBtn').style.display = 'none';
-        
+
         // Stop listening for scanned students
         const scannedRef = ref(db, `qrSessions/${currentSessionId}/scannedStudents`);
         off(scannedRef);
-        
+
         showStatus("QR Attendance session stopped successfully!", "success");
-        
+
         // Reload history
         loadAttendanceHistory();
-        
+
         currentSessionId = null;
-        
+
       } catch (error) {
         console.error("Error stopping QR session:", error);
         showStatus("Error stopping QR session: " + error.message, "error");
@@ -800,23 +806,23 @@
       const historyBody = document.getElementById('historyBody');
       const noHistory = document.getElementById('noHistory');
       const loadingHistory = document.getElementById('loadingHistory');
-      
+
       historyBody.innerHTML = '';
       noHistory.style.display = 'none';
       loadingHistory.style.display = 'block';
-      
+
       try {
         const snapshot = await get(ref(db, 'qrSessions'));
-        
+
         if (!snapshot.exists()) {
           loadingHistory.style.display = 'none';
           noHistory.style.display = 'block';
           return;
         }
-        
+
         const sessions = snapshot.val();
         const sessionArray = [];
-        
+
         // Convert to array and filter by current teacher
         for (const sessionId in sessions) {
           const session = sessions[sessionId];
@@ -827,22 +833,22 @@
             });
           }
         }
-        
+
         // Sort by date (newest first)
         sessionArray.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
-        
+
         // Display sessions
         sessionArray.forEach(session => {
           const row = document.createElement('tr');
-          
+
           const startDate = new Date(session.startTime);
           const dateString = startDate.toLocaleDateString();
           const timeString = startDate.toLocaleTimeString();
-          
+
           const studentCount = session.scannedStudents ? Object.keys(session.scannedStudents).length : 0;
           const statusClass = session.status === 'active' ? 'status-active' : 'status-expired';
           const statusText = session.status === 'active' ? 'Active' : 'Completed';
-          
+
           row.innerHTML = `
             <td>${dateString}<br><small>${timeString}</small></td>
             <td>${session.subject}</td>
@@ -851,16 +857,16 @@
             <td>${studentCount} students</td>
             <td class="${statusClass}">${statusText}</td>
           `;
-          
+
           historyBody.appendChild(row);
         });
-        
+
         loadingHistory.style.display = 'none';
-        
+
         if (sessionArray.length === 0) {
           noHistory.style.display = 'block';
         }
-        
+
       } catch (error) {
         console.error("Error loading attendance history:", error);
         loadingHistory.style.display = 'none';
@@ -874,7 +880,7 @@
       statusMessage.textContent = message;
       statusMessage.className = `status-message status-${type}`;
       statusMessage.style.display = 'block';
-      
+
       // Auto hide after 5 seconds for success messages
       if (type === 'success') {
         setTimeout(() => {
@@ -889,7 +895,7 @@
       if (currentSessionId) {
         stopQRAttendance();
       }
-      
+
       sessionStorage.removeItem('teacher');
       window.location.href = 'index.html';
     }
@@ -899,17 +905,17 @@
       // Check authentication
       teacherData = checkTeacherAuth();
       if (!teacherData) return;
-      
+
       // Display teacher name
       document.getElementById('teacherName').textContent = teacherData.name || teacherData.email;
-      
+
       // Update date/time immediately and set interval
       updateDateTime();
       setInterval(updateDateTime, 1000);
-      
+
       // Load attendance history
       loadAttendanceHistory();
-      
+
       // Set default values
       document.getElementById('periodNumber').value = '1';
       document.getElementById('attendanceDuration').value = '10';
@@ -921,4 +927,5 @@
     window.logout = logout;
   </script>
 </body>
+
 </html>
