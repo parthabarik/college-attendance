@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Attendance </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding: 15px 25px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    h1 {
+      color: #4a6cf7;
+      font-size: 28px;
+    }
+    
+    .date-display {
+      background: #f0f5ff;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #4a6cf7;
+    }
+    
+    .nav-tabs {
+      display: flex;
+      background: white;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    .tab {
+      padding: 15px 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      text-align: center;
+      flex: 1;
+    }
+    
+    .tab.active {
+      background: #4a6cf7;
+      color: white;
+    }
+    
+    .tab:hover:not(.active) {
+      background: #f0f5ff;
+    }
+    
+    .tab-content {
+      display: none;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 25px;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .form-section {
+      flex: 1;
+      min-width: 250px;
+    }
+    
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #444;
+    }
+    
+    input, select, textarea {
+      padding: 12px;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      background: #f9f9f9;
+      transition: all 0.3s;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #4a6cf7;
+      box-shadow: 0 0 0 2px rgba(74, 108, 247, 0.2);
+    }
+    
+    button {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 16px;
+    }
+    
+    .btn-primary {
+      background: #4a6cf7;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #3a5cd8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(74, 108, 247, 0.3);
+    }
+    
+    .btn-secondary {
+      background: #00c9a7;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #00b098;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 201, 167, 0.3);
+    }
+    
+    .btn-danger {
+      background: #ff6b6b;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #ff5252;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+    }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    
+    .data-table th, .data-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .data-table th {
+      background: #f0f5ff;
+      font-weight: bold;
+      color: #4a6cf7;
+    }
+    
+    .data-table tr:hover {
+      background: #f9fbfe;
+    }
+    
+    .logout {
+      display: inline-block;
+      padding: 12px 25px;
+      background: #ff4d4d;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .logout:hover {
+      background: #cc0000;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 77, 77, 0.3);
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .status-message {
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 15px;
+      text-align: center;
+      display: none;
+    }
+    
+    .status-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .status-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .loading-spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Student Management Specific Styles */
+    .section-filter {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .filter-row {
+      display: flex;
+      gap: 15px;
+      align-items: end;
+      flex-wrap: wrap;
+    }
+    
+    .filter-group {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    .student-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+      display: none;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .modal-header {
+      background: linear-gradient(135deg, #4a6cf7 0%, #00c9a7 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 15px 15px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-header h2 {
+      font-size: 22px;
+      font-weight: 600;
+    }
+    
+    .close-modal {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+    
+    .close-modal:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .modal-body {
+      padding: 25px;
+    }
+    
+    .student-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+    
+    .info-item {
+      margin-bottom: 15px;
+    }
+    
+    .info-label {
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+    
+    .info-value {
+      color: #333;
+      font-size: 16px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .additional-info {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid #f0f0f0;
+    }
+    
+    /* Feedback Management Styles */
+    .section-subtitle {
+      color: #666;
+      margin-bottom: 20px;
+    }
+    
+    .feedback-controls {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+    }
+    
+    .filter-controls {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .filter-controls select,
+    .filter-controls input {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    .feedback-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .feedback-item {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      border-left: 4px solid #4a6cf7;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .feedback-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feedback-item.pending {
+      border-left-color: #ffc107;
+    }
+    
+    .feedback-item.resolved {
+      border-left-color: #00c9a7;
+    }
+    
+    .feedback-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    
+    .feedback-user {
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .feedback-email {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .feedback-roll {
+      background: #f0f5ff;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #4a6cf7;
+    }
+    
+    .feedback-date {
+      color: #888;
+      font-size: 14px;
+    }
+    
+    .feedback-message {
+      margin: 10px 0;
+      line-height: 1.5;
+      color: #444;
+    }
+    
+    .feedback-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+    }
+    
+    .feedback-status {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-resolved {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+    
+    .feedback-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .message-section {
+      margin: 20px 0;
+    }
+    
+    .message-content {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+    
+    .status-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+    
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .nav-tabs {
+        flex-direction: column;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .filter-row {
+        flex-direction: column;
+      }
+      
+      .student-actions {
+        flex-direction: column;
+      }
+      
+      .student-info {
+        grid-template-columns: 1fr;
+      }
+      
+      .modal-content {
+        width: 95%;
+      }
+      
+      .filter-controls {
+        flex-direction: column;
+      }
+      
+      .feedback-header {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .feedback-footer {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .status-controls {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Admin Dashboard</h1>
+      <div class="date-display" id="currentDate"></div>
+      <a class="logout" href="index.html" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
+
+    <div class="nav-tabs">
+      <div class="tab active" onclick="switchTab('students')">Student Management</div>
+      <div class="tab" onclick="switchTab('teachers')">Teacher Management</div>
+      <div class="tab" onclick="switchTab('feedback')">Feedback & Queries</div>
+    </div>
+
+    <!-- Student Management Tab -->
+    <div id="students" class="tab-content active">
+      <h2>Add New Student</h2>
+      <div class="form-row">
+        <div class="form-section">
+          <label for="studentName">Full Name:</label>
+          <input type="text" id="studentName" placeholder="e.g., Aditya Sharma">
+        </div>
+        <div class="form-section">
+          <label for="studentRoll">Roll Number:</label>
+          <input type="text" id="studentRoll" placeholder="e.g., R001">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-section">
+          <label for="studentEmail">Email:</label>
+          <input type="email" id="studentEmail" placeholder="e.g., student@example.com">
+        </div>
+        <div class="form-section">
+          <label for="studentPassword">Password:</label>
+          <input type="password" id="studentPassword" placeholder="Set student password">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-section">
+          <label for="studentReg">Registration Number:</label>
+          <input type="text" id="studentReg" placeholder="e.g., REG2023001">
+        </div>
+        <div class="form-section">
+          <label for="studentBranch">Branch:</label>
+          <select id="studentBranch">
+            <option value="">-- Select Branch --</option>
+            <option value="CSE">Computer Science</option>
+            <option value="ECE">Electronics & Communication</option>
+            <option value="ME">Mechanical Engineering</option>
+            <option value="CE">Civil Engineering</option>
+            <option value="EE">Electrical Engineering</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-section">
+          <label for="studentSection">Section:</label>
+          <select id="studentSection">
+            <option value="">-- Select Section --</option>
+            <option value="A">Section A</option>
+            <option value="B">Section B</option>
+            <option value="C">Section C</option>
+            <option value="D">Section D</option>
+          </select>
+        </div>
+        <div class="form-section">
+          <label for="studentSemester">Semester:</label>
+          <select id="studentSemester">
+            <option value="">-- Select Semester --</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-section">
+          <label for="studentPhone">Phone Number:</label>
+          <input type="tel" id="studentPhone" placeholder="e.g., 9876543210">
+        </div>
+        <div class="form-section">
+          <label for="studentParentPhone">Parent's Phone:</label>
+          <input type="tel" id="studentParentPhone" placeholder="e.g., 9876543210">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-section">
+          <label for="studentAddress">Address:</label>
+          <textarea id="studentAddress" placeholder="Enter student's address" rows="3"></textarea>
+        </div>
+      </div>
+      <button class="btn-primary" id="addStudentBtn">
+        <span id="studentBtnText">Add Student</span>
+        <div class="loading-spinner" id="studentLoadingSpinner"></div>
+      </button>
+      
+      <div class="status-message" id="studentStatusMessage"></div>
+
+      <h2 style="margin-top: 30px;">Student List</h2>
+      
+      <!-- Section Filter -->
+      <div class="section-filter">
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="filterBranch">Filter by Branch:</label>
+            <select id="filterBranch" onchange="filterStudents()">
+              <option value="">All Branches</option>
+              <option value="CSE">Computer Science</option>
+              <option value="ECE">Electronics & Communication</option>
+              <option value="ME">Mechanical Engineering</option>
+              <option value="CE">Civil Engineering</option>
+              <option value="EE">Electrical Engineering</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="filterSection">Filter by Section:</label>
+            <select id="filterSection" onchange="filterStudents()">
+              <option value="">All Sections</option>
+              <option value="A">Section A</option>
+              <option value="B">Section B</option>
+              <option value="C">Section C</option>
+              <option value="D">Section D</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="filterSemester">Filter by Semester:</label>
+            <select id="filterSemester" onchange="filterStudents()">
+              <option value="">All Semesters</option>
+              <option value="1">1st Semester</option>
+              <option value="2">2nd Semester</option>
+              <option value="3">3rd Semester</option>
+              <option value="4">4th Semester</option>
+              <option value="5">5th Semester</option>
+              <option value="6">6th Semester</option>
+              <option value="7">7th Semester</option>
+              <option value="8">8th Semester</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="searchStudent">Search:</label>
+            <input type="text" id="searchStudent" placeholder="Search by name or roll no" onkeyup="filterStudents()">
+          </div>
+        </div>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Roll No.</th>
+            <th>Name</th>
+            <th>Registration No.</th>
+            <th>Branch</th>
+            <th>Section</th>
+            <th>Semester</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="studentList">
+          <!-- Student data will be added here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Teacher Management Tab -->
+    <div id="teachers" class="tab-content">
+      <h2>Add New Teacher</h2>
+      <div class="form-row">
+        <div class="form-section">
+          <label for="teacherName">Full Name:</label>
+          <input type="text" id="teacherName" placeholder="e.g., Dr. Sunita Patel">
+        </div>
+        <div class="form-section">
+          <label for="teacherEmail">Email:</label>
+          <input type="email" id="teacherEmail" placeholder="e.g., teacher@example.com">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-section">
+          <label for="teacherPassword">Password:</label>
+          <input type="password" id="teacherPassword" placeholder="Set teacher password">
+        </div>
+        <div class="form-section">
+          <label for="teacherSubject">Subject:</label>
+          <input type="text" id="teacherSubject" placeholder="e.g., Data Structures">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-section">
+          <label for="teacherDepartment">Department:</label>
+          <select id="teacherDepartment">
+            <option value="">-- Select Department --</option>
+            <option value="CSE">Computer Science</option>
+            <option value="ECE">Electronics & Communication</option>
+            <option value="ME">Mechanical Engineering</option>
+            <option value="CE">Civil Engineering</option>
+            <option value="EE">Electrical Engineering</option>
+          </select>
+        </div>
+        <div class="form-section">
+          <label for="teacherPhone">Phone Number:</label>
+          <input type="tel" id="teacherPhone" placeholder="e.g., 9876543210">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-section">
+          <label for="teacherQualification">Qualification:</label>
+          <input type="text" id="teacherQualification" placeholder="e.g., M.Tech, Ph.D">
+        </div>
+        <div class="form-section">
+          <label for="teacherExperience">Experience (Years):</label>
+          <input type="number" id="teacherExperience" placeholder="e.g., 5">
+        </div>
+      </div>
+      <button class="btn-primary" id="addTeacherBtn">
+        <span id="teacherBtnText">Add Teacher</span>
+        <div class="loading-spinner" id="teacherLoadingSpinner"></div>
+      </button>
+      
+      <div class="status-message" id="teacherStatusMessage"></div>
+
+      <h2 style="margin-top: 30px;">Teacher List</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Subject</th>
+            <th>Department</th>
+            <th>Qualification</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="teacherList">
+          <!-- Teacher data will be added here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Feedback & Queries Tab -->
+    <div id="feedback" class="tab-content">
+      <h2>User Feedback & Queries</h2>
+      <p class="section-subtitle">Manage user inquiries and feedback from the contact form</p>
+      
+      <div class="feedback-controls">
+        <div class="filter-controls">
+          <select id="feedbackStatusFilter" onchange="filterFeedback()">
+            <option value="all">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="resolved">Resolved</option>
+          </select>
+          
+          <input type="text" id="feedbackSearch" placeholder="Search by name or email..." onkeyup="filterFeedback()">
+        </div>
+      </div>
+
+      <div class="feedback-list" id="feedbackList">
+        <!-- Feedback items will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Details Modal -->
+  <div class="modal-overlay" id="studentModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-user-graduate"></i> Student Details</h2>
+        <button class="close-modal" onclick="closeStudentModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="student-info">
+          <div>
+            <div class="info-item">
+              <div class="info-label">Roll Number</div>
+              <div class="info-value" id="modalRollNo">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Full Name</div>
+              <div class="info-value" id="modalName">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Registration Number</div>
+              <div class="info-value" id="modalRegNo">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Email</div>
+              <div class="info-value" id="modalEmail">-</div>
+            </div>
+          </div>
+          <div>
+            <div class="info-item">
+              <div class="info-label">Branch</div>
+              <div class="info-value" id="modalBranch">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Section</div>
+              <div class="info-value" id="modalSection">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Semester</div>
+              <div class="info-value" id="modalSemester">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Phone</div>
+              <div class="info-value" id="modalPhone">-</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="additional-info">
+          <div class="info-item">
+            <div class="info-label">Parent's Phone</div>
+            <div class="info-value" id="modalParentPhone">-</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Address</div>
+            <div class="info-value" id="modalAddress">-</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Date Added</div>
+            <div class="info-value" id="modalDateAdded">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feedback Modal -->
+  <div class="modal-overlay" id="feedbackModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-comment-dots"></i> Feedback Details</h2>
+        <button class="close-modal" onclick="closeFeedbackModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="feedback-info">
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-label">Name</div>
+              <div class="info-value" id="feedbackName">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Email</div>
+              <div class="info-value" id="feedbackEmail">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Roll Number</div>
+              <div class="info-value" id="feedbackRollNo">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Date</div>
+              <div class="info-value" id="feedbackDate">-</div>
+            </div>
+          </div>
+          
+          <div class="message-section">
+            <div class="info-label">Message</div>
+            <div class="message-content" id="feedbackMessage">-</div>
+          </div>
+          
+          <div class="status-controls">
+            <div class="info-label">Status:</div>
+            <select id="feedbackStatus">
+              <option value="pending">Pending</option>
+              <option value="resolved">Resolved</option>
+            </select>
+            <button class="btn-primary" onclick="updateFeedbackStatus()">
+              <i class="fas fa-save"></i> Update Status
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="admin.js"></script>
+  <script>
+// Add event listeners after page loads
+document.addEventListener('DOMContentLoaded', function() {
+  // Set current date
+  const now = new Date();
+  document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  // Student form submission
+  document.getElementById('addStudentBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    if (typeof addStudent === 'function') {
+      addStudent();
+    } else {
+      console.error('addStudent function not found');
+      alert('System error: Please refresh the page');
+    }
+  });
+
+  // Teacher form submission  
+  document.getElementById('addTeacherBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    if (typeof addTeacher === 'function') {
+      addTeacher();
+    } else {
+      console.error('addTeacher function not found');
+      alert('System error: Please refresh the page');
+    }
+  });
+
+  // Tab switching with event listeners
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      const tabName = this.textContent.toLowerCase().replace(' management', '').replace(' & queries', '');
+      if (typeof switchTab === 'function') {
+        switchTab(tabName === 'student' ? 'students' : 
+                 tabName === 'teacher' ? 'teachers' : 
+                 tabName === 'feedback' ? 'feedback' : tabName);
+      }
+    });
+  });
+
+  // Logout button
+  document.querySelector('.logout').addEventListener('click', function(e) {
+    e.preventDefault();
+    if (typeof logout === 'function') {
+      logout();
+    }
+  });
+
+  // Close modal when clicking outside
+  document.getElementById('studentModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeStudentModal();
+    }
+  });
+
+  document.getElementById('feedbackModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeFeedbackModal();
+    }
+  });
+
+  // Close modal with Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeStudentModal();
+      closeFeedbackModal();
+    }
+  });
+
+  // Load sample feedback data
+  loadSampleFeedback();
+});
+
+// Tab switching function
+function switchTab(tabName) {
+  // Hide all tab contents
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  
+  // Remove active class from all tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  
+  // Show selected tab content
+  document.getElementById(tabName).classList.add('active');
+  
+  // Set active class to clicked tab
+  event.target.classList.add('active');
+}
+
+// Logout function
+function logout() {
+  if (confirm('Are you sure you want to logout?')) {
+    // In a real application, you would clear session/token here
+    window.location.href = 'index.html';
+  }
+}
+
+// Student modal functions
+function closeStudentModal() {
+  document.getElementById('studentModal').style.display = 'none';
+}
+
+// View student details in modal
+window.viewStudentDetails = function(studentId) {
+  if (!window.allStudents || !window.allStudents[studentId]) {
+    alert('Student data not found');
+    return;
+  }
+
+  const student = window.allStudents[studentId];
+  
+  // Populate modal with student data
+  document.getElementById('modalRollNo').textContent = student.rollNo || '-';
+  document.getElementById('modalName').textContent = student.name || '-';
+  document.getElementById('modalRegNo').textContent = student.regNo || '-';
+  document.getElementById('modalEmail').textContent = student.email || '-';
+  document.getElementById('modalBranch').textContent = student.branch || '-';
+  document.getElementById('modalSection').textContent = student.section ? `Section ${student.section}` : '-';
+  document.getElementById('modalSemester').textContent = student.semester ? `${student.semester} Semester` : '-';
+  document.getElementById('modalPhone').textContent = student.phone || '-';
+  document.getElementById('modalParentPhone').textContent = student.parentPhone || '-';
+  document.getElementById('modalAddress').textContent = student.address || '-';
+  
+  // Format and display date
+  if (student.createdAt) {
+    const date = new Date(student.createdAt);
+    document.getElementById('modalDateAdded').textContent = date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  } else {
+    document.getElementById('modalDateAdded').textContent = '-';
+  }
+
+  // Show modal
+  document.getElementById('studentModal').style.display = 'flex';
+};
+
+// Feedback Management Functions
+let allFeedback = [];
+let currentFeedbackId = null;
+
+function loadSampleFeedback() {
+  // Sample feedback data
+  allFeedback = [
+    {
+      id: 1,
+      name: "Rahul Kumar",
+      email: "rahul.kumar@example.com",
+      rollNo: "R001",
+      message: "The attendance system is very helpful, but I noticed that sometimes it doesn't update immediately after marking attendance. Could you please look into this issue?",
+      date: "2023-10-15",
+      status: "pending"
+    },
+    {
+      id: 2,
+      name: "Priya Sharma",
+      email: "priya.sharma@example.com",
+      rollNo: "R045",
+      message: "I forgot to mark my attendance for the last class. Is there any way to request a correction?",
+      date: "2023-10-14",
+      status: "resolved"
+    },
+    {
+      id: 3,
+      name: "Amit Patel",
+      email: "amit.patel@example.com",
+      rollNo: "R078",
+      message: "The system is working great! I really appreciate the user-friendly interface and the ability to check my attendance history.",
+      date: "2023-10-13",
+      status: "resolved"
+    },
+    {
+      id: 4,
+      name: "Sneha Gupta",
+      email: "sneha.gupta@example.com",
+      rollNo: "R112",
+      message: "I'm having trouble logging into the system. It says my password is incorrect, but I'm sure I'm using the right one. Can you help reset it?",
+      date: "2023-10-12",
+      status: "pending"
+    }
+  ];
+  
+  renderFeedback(allFeedback);
+}
+
+function renderFeedback(feedbackArray) {
+  const feedbackList = document.getElementById('feedbackList');
+  
+  if (feedbackArray.length === 0) {
+    feedbackList.innerHTML = '<div class="no-feedback">No feedback found matching your criteria.</div>';
+    return;
+  }
+  
+  feedbackList.innerHTML = feedbackArray.map(feedback => `
+    <div class="feedback-item ${feedback.status}">
+      <div class="feedback-header">
+        <div>
+          <div class="feedback-user">${feedback.name}</div>
+          <div class="feedback-email">${feedback.email}</div>
+        </div>
+        <div class="feedback-roll">${feedback.rollNo}</div>
+      </div>
+      <div class="feedback-date">${formatDate(feedback.date)}</div>
+      <div class="feedback-message">${feedback.message}</div>
+      <div class="feedback-footer">
+        <div class="feedback-status status-${feedback.status}">${feedback.status.charAt(0).toUpperCase() + feedback.status.slice(1)}</div>
+        <div class="feedback-actions">
+          <button class="btn-primary" onclick="viewFeedbackDetails(${feedback.id})">
+            <i class="fas fa-eye"></i> View Details
+          </button>
+          <button class="btn-${feedback.status === 'pending' ? 'secondary' : 'danger'}" onclick="toggleFeedbackStatus(${feedback.id})">
+            ${feedback.status === 'pending' ? '<i class="fas fa-check"></i> Mark Resolved' : '<i class="fas fa-undo"></i> Mark Pending'}
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+function filterFeedback() {
+  const statusFilter = document.getElementById('feedbackStatusFilter').value;
+  const searchTerm = document.getElementById('feedbackSearch').value.toLowerCase();
+  
+  let filteredFeedback = allFeedback;
+  
+  // Filter by status
+  if (statusFilter !== 'all') {
+    filteredFeedback = filteredFeedback.filter(feedback => feedback.status === statusFilter);
+  }
+  
+  // Filter by search term
+  if (searchTerm) {
+    filteredFeedback = filteredFeedback.filter(feedback => 
+      feedback.name.toLowerCase().includes(searchTerm) || 
+      feedback.email.toLowerCase().includes(searchTerm) ||
+      feedback.rollNo.toLowerCase().includes(searchTerm)
+    );
+  }
+  
+  renderFeedback(filteredFeedback);
+}
+
+function viewFeedbackDetails(feedbackId) {
+  const feedback = allFeedback.find(f => f.id === feedbackId);
+  
+  if (!feedback) {
+    alert('Feedback not found');
+    return;
+  }
+  
+  currentFeedbackId = feedbackId;
+  
+  // Populate modal with feedback data
+  document.getElementById('feedbackName').textContent = feedback.name;
+  document.getElementById('feedbackEmail').textContent = feedback.email;
+  document.getElementById('feedbackRollNo').textContent = feedback.rollNo;
+  document.getElementById('feedbackDate').textContent = formatDate(feedback.date);
+  document.getElementById('feedbackMessage').textContent = feedback.message;
+  document.getElementById('feedbackStatus').value = feedback.status;
+  
+  // Show modal
+  document.getElementById('feedbackModal').style.display = 'flex';
+}
+
+function closeFeedbackModal() {
+  document.getElementById('feedbackModal').style.display = 'none';
+  currentFeedbackId = null;
+}
+
+function updateFeedbackStatus() {
+  if (!currentFeedbackId) return;
+  
+  const newStatus = document.getElementById('feedbackStatus').value;
+  const feedbackIndex = allFeedback.findIndex(f => f.id === currentFeedbackId);
+  
+  if (feedbackIndex !== -1) {
+    allFeedback[feedbackIndex].status = newStatus;
+    renderFeedback(allFeedback);
+    filterFeedback(); // Reapply filters
+    closeFeedbackModal();
+    
+    // Show success message
+    alert(`Feedback status updated to ${newStatus}`);
+  }
+}
+
+function toggleFeedbackStatus(feedbackId) {
+  const feedbackIndex = allFeedback.findIndex(f => f.id === feedbackId);
+  
+  if (feedbackIndex !== -1) {
+    allFeedback[feedbackIndex].status = allFeedback[feedbackIndex].status === 'pending' ? 'resolved' : 'pending';
+    renderFeedback(allFeedback);
+    filterFeedback(); // Reapply filters
+    
+    // Show success message
+    alert(`Feedback status updated to ${allFeedback[feedbackIndex].status}`);
+  }
+}
+
+// Sample student data for demonstration
+window.allStudents = {
+  "R001": {
+    rollNo: "R001",
+    name: "Aditya Sharma",
+    regNo: "REG2023001",
+    email: "aditya.sharma@example.com",
+    branch: "CSE",
+    section: "A",
+    semester: "3",
+    phone: "9876543210",
+    parentPhone: "9876543211",
+    address: "123 Main Street, Bangalore, Karnataka",
+    createdAt: "2023-08-15"
+  },
+  "R002": {
+    rollNo: "R002",
+    name: "Priya Patel",
+    regNo: "REG2023002",
+    email: "priya.patel@example.com",
+    branch: "ECE",
+    section: "B",
+    semester: "2",
+    phone: "9876543212",
+    parentPhone: "9876543213",
+    address: "456 Park Avenue, Mumbai, Maharashtra",
+    createdAt: "2023-08-16"
+  }
+};
+
+// Sample teacher data for demonstration
+window.allTeachers = {
+  "T001": {
+    id: "T001",
+    name: "Dr. Sunita Patel",
+    email: "sunita.patel@example.com",
+    subject: "Data Structures",
+    department: "CSE",
+    qualification: "Ph.D in Computer Science",
+    experience: "8"
+  },
+  "T002": {
+    id: "T002",
+    name: "Prof. Rajesh Kumar",
+    email: "rajesh.kumar@example.com",
+    subject: "Digital Electronics",
+    department: "ECE",
+    qualification: "M.Tech, Ph.D",
+    experience: "12"
+  }
+};
+
+// Initialize student and teacher tables
+function initializeTables() {
+  // Populate student table
+  const studentList = document.getElementById('studentList');
+  studentList.innerHTML = Object.values(window.allStudents).map(student => `
+    <tr>
+      <td>${student.rollNo}</td>
+      <td>${student.name}</td>
+      <td>${student.regNo}</td>
+      <td>${student.branch}</td>
+      <td>${student.section}</td>
+      <td>${student.semester}</td>
+      <td>${student.email}</td>
+      <td>
+        <button class="btn-primary" onclick="viewStudentDetails('${student.rollNo}')">
+          <i class="fas fa-eye"></i> View
+        </button>
+        <button class="btn-secondary">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+        <button class="btn-danger">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </td>
+    </tr>
+  `).join('');
+  
+  // Populate teacher table
+  const teacherList = document.getElementById('teacherList');
+  teacherList.innerHTML = Object.values(window.allTeachers).map(teacher => `
+    <tr>
+      <td>${teacher.name}</td>
+      <td>${teacher.email}</td>
+      <td>${teacher.subject}</td>
+      <td>${teacher.department}</td>
+      <td>${teacher.qualification}</td>
+      <td>
+        <button class="btn-primary">
+          <i class="fas fa-eye"></i> View
+        </button>
+        <button class="btn-secondary">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+        <button class="btn-danger">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// Call initialization when page loads
+document.addEventListener('DOMContentLoaded', initializeTables);
+  </script>
+</body>
+</html>

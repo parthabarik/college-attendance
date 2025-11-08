@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard - Attendance System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #00c9a7 0%, #5a70d5 100%);
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-info img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .date-display {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    .main-content {
+      padding: 25px 30px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: #f8f9fa;
+      padding: 15px 20px;
+      border-bottom: 1px solid #eee;
+      font-weight: 600;
+      color: #444;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .attendance-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    .attendance-table th {
+      background: #5a70d5;
+      color: white;
+      padding: 12px;
+      text-align: left;
+    }
+
+    .attendance-table td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .attendance-table tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    .attendance-table tr:hover {
+      background: #f0f4ff;
+    }
+
+    .percentage-cell {
+      font-weight: 600;
+    }
+
+    .percentage-high {
+      color: #00c9a7;
+    }
+
+    .percentage-medium {
+      color: #ffa500;
+    }
+
+    .percentage-low {
+      color: #ff6b6b;
+    }
+
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-card.overall {
+      border-top: 4px solid #5a70d5;
+    }
+
+    .stat-card.best {
+      border-top: 4px solid #00c9a7;
+    }
+
+    .stat-card.worst {
+      border-top: 4px solid #ff6b6b;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+
+    .overall .stat-value {
+      color: #5a70d5;
+    }
+
+    .best .stat-value {
+      color: #00c9a7;
+    }
+
+    .worst .stat-value {
+      color: #ff6b6b;
+    }
+
+    .stat-label {
+      color: #777;
+      font-size: 14px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: #00c9a7;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #00b398;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 201, 167, 0.3);
+    }
+
+    .btn-secondary {
+      background: #5a70d5;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #4a60c5;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(90, 112, 213, 0.3);
+    }
+
+    .btn-logout {
+      background: #ff6b6b;
+      color: white;
+    }
+
+    .btn-logout:hover {
+      background: #ff5252;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+      font-size: 14px;
+      border-top: 1px solid #eee;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 30px;
+      color: #777;
+      display: none;
+    }
+
+    /* Attendance Popup Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+      display: none;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #00c9a7 0%, #5a70d5 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 15px 15px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+
+    .close-modal:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-body {
+      padding: 25px;
+    }
+
+    .student-welcome {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .student-welcome h3 {
+      color: #00c9a7;
+      margin-bottom: 5px;
+    }
+
+    .attendance-summary-popup {
+      margin-top: 15px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+
+    .subject-name {
+      font-weight: 500;
+      color: #333;
+    }
+
+    .attendance-percentage {
+      font-weight: 600;
+    }
+
+    .overall-summary {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .overall-percentage {
+      font-size: 24px;
+      font-weight: 700;
+      color: #5a70d5;
+      margin: 10px 0;
+    }
+
+    /* New styles for improved dashboard */
+    .welcome-section {
+      background: linear-gradient(135deg, #f0f7ff 0%, #e6f3ff 100%);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-left: 5px solid #5a70d5;
+    }
+
+    .welcome-icon {
+      font-size: 36px;
+      color: #5a70d5;
+    }
+
+    .welcome-text h2 {
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .welcome-text p {
+      color: #666;
+    }
+
+    .quick-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .quick-stat {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      border-top: 3px solid #5a70d5;
+    }
+
+    .quick-stat i {
+      font-size: 24px;
+      color: #5a70d5;
+      margin-bottom: 10px;
+    }
+
+    .quick-stat .value {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .quick-stat .label {
+      color: #777;
+      font-size: 13px;
+    }
+
+    .attendance-chart {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .chart-placeholder {
+      height: 200px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #777;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .user-info {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .stats-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .attendance-table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      .welcome-section {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .quick-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><i class="fas fa-user-graduate"></i> Student Dashboard</h1>
+      <div class="date-display" id="currentDate"></div>
+      <div class="user-info">
+        <img
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='40' r='30' fill='%2300c9a7'/><circle cx='50' cy='100' r='40' fill='%235a70d5'/></svg>"
+          alt="Student">
+        <span id="studentEmail">Loading...</span>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <!-- Welcome Section -->
+      <div class="welcome-section">
+        <div class="welcome-icon">
+          <i class="fas fa-user-graduate"></i>
+        </div>
+        <div class="welcome-text">
+          <h2 id="welcomeStudentName">Welcome, Student!</h2>
+          <p>Track your attendance and academic progress in one place.</p>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="quick-stats">
+        <div class="quick-stat">
+          <i class="fas fa-book"></i>
+          <div class="value" id="totalSubjects">0</div>
+          <div class="label">Total Subjects</div>
+        </div>
+        <div class="quick-stat">
+          <i class="fas fa-calendar-check"></i>
+          <div class="value" id="totalClasses">0</div>
+          <div class="label">Total Classes</div>
+        </div>
+        <div class="quick-stat">
+          <i class="fas fa-user-check"></i>
+          <div class="value" id="totalPresent">0</div>
+          <div class="label">Classes Attended</div>
+        </div>
+        <div class="quick-stat">
+          <i class="fas fa-chart-line"></i>
+          <div class="value" id="overallQuick">0%</div>
+          <div class="label">Overall Attendance</div>
+        </div>
+      </div>
+
+      <!-- Attendance Chart Placeholder -->
+      <div class="attendance-chart">
+        <div class="card-header">
+          <span>Attendance Trend</span>
+        </div>
+        <div class="chart-placeholder">
+          <p>Attendance visualization chart would appear here</p>
+        </div>
+      </div>
+
+      <!-- Main Attendance Card -->
+      <div class="card">
+        <div class="card-header">
+          <span>My Attendance Summary</span>
+        </div>
+        <div class="card-body">
+          <div class="no-data" id="noDataMessage">
+            <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 15px;"></i>
+            <p>No attendance data available for you.</p>
+          </div>
+
+          <div class="stats-cards" id="statsCards" style="display: none;">
+            <div class="stat-card overall">
+              <div class="stat-label">OVERALL ATTENDANCE</div>
+              <div class="stat-value" id="overallPercentage">0%</div>
+              <div class="stat-label">across all subjects</div>
+            </div>
+            <div class="stat-card best">
+              <div class="stat-label">BEST SUBJECT</div>
+              <div class="stat-value" id="bestSubject">-</div>
+              <div class="stat-label" id="bestPercentage">0%</div>
+            </div>
+            <div class="stat-card worst">
+              <div class="stat-label">NEEDS IMPROVEMENT</div>
+              <div class="stat-value" id="worstSubject">-</div>
+              <div class="stat-label" id="worstPercentage">0%</div>
+            </div>
+          </div>
+
+          <table class="attendance-table" id="attendanceTable">
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Total Classes</th>
+                <th>Present</th>
+                <th>Absent</th>
+                <th>Attendance %</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <div class="loading" id="loadingIndicator">
+            <i class="fas fa-spinner fa-spin"></i> Loading your attendance data...
+          </div>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <a href="qr-scanner.html" class="btn btn-primary">
+          <i class="fas fa-camera"></i> Scan QR Code
+        </a>
+        <button class="btn btn-secondary" onclick="showAttendancePopup()">
+          <i class="fas fa-chart-bar"></i> Show Attendance Summary
+        </button>
+        <a href="index.html" class="btn btn-logout" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>TAT Attendance Management System © 2023 | Student Dashboard</p>
+    </div>
+  </div>
+
+  <!-- Attendance Popup Modal -->
+  <div class="modal-overlay" id="attendancePopup">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-chart-pie"></i> Attendance Summary</h2>
+        <button class="close-modal" onclick="closeAttendancePopup()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="student-welcome">
+          <h3 id="popupStudentName">Student Name</h3>
+          <p id="popupStudentDetails">Roll No: - | Branch: -</p>
+        </div>
+
+        <div class="attendance-summary-popup" id="attendanceSummaryPopup">
+          <!-- Attendance summary will be populated here -->
+        </div>
+
+        <div class="overall-summary">
+          <div class="stat-label">OVERALL ATTENDANCE</div>
+          <div class="overall-percentage" id="popupOverallPercentage">0%</div>
+          <div class="stat-label" id="popupAttendanceStatus">Keep up the good work!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCe0DvO_8prqSxzzr7A8AfiGyOqqj-_DP4",
+      authDomain: "attendance-67f62.firebaseapp.com",
+      databaseURL: "https://attendance-67f62-default-rtdb.firebaseio.com",
+      projectId: "attendance-67f62",
+      storageBucket: "attendance-67f62.firebasestorage.app",
+      messagingSenderId: "459244634281",
+      appId: "1:459244634281:web:e8630366dc5cfe31dca9b8",
+      measurementId: "G-RM00FSG6Q9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Get DOM elements
+    const table = document.getElementById("attendanceTable");
+    const tableBody = table.querySelector("tbody");
+    const loadingIndicator = document.getElementById("loadingIndicator");
+    const noDataMessage = document.getElementById("noDataMessage");
+    const statsCards = document.getElementById("statsCards");
+    const studentEmail = document.getElementById("studentEmail");
+    const welcomeStudentName = document.getElementById("welcomeStudentName");
+
+    // Student data and attendance summary
+    let currentStudent = null;
+    let attendanceSummary = {};
+
+    // Update current date
+    function updateDate() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+    }
+
+    // Check if student is logged in
+    function checkStudentAuth() {
+      const studentData = sessionStorage.getItem('student');
+      if (!studentData) {
+        window.location.href = 'student-login.html';
+        return null;
+      }
+      try {
+        const parsedStudent = JSON.parse(studentData);
+
+        // Auto-fix old session data missing ID
+        if (!parsedStudent.id) {
+          if (parsedStudent.fullRollNo) {
+            parsedStudent.id = parsedStudent.fullRollNo;
+          } else if (parsedStudent.rollNo && parsedStudent.branch && parsedStudent.section) {
+            parsedStudent.fullRollNo = `${parsedStudent.branch}-${parsedStudent.section}-${parsedStudent.rollNo}`;
+            parsedStudent.id = parsedStudent.fullRollNo;
+          } else {
+            // Can't fix - force re-login
+            alert('Your session is outdated. Please login again.');
+            sessionStorage.removeItem('student');
+            window.location.href = 'student-login.html';
+            return null;
+          }
+          // Save fixed data
+          sessionStorage.setItem('student', JSON.stringify(parsedStudent));
+        }
+
+        return parsedStudent;
+      } catch (error) {
+        console.error('Error parsing student data:', error);
+        sessionStorage.removeItem('student');
+        window.location.href = 'student-login.html';
+        return null;
+      }
+    }
+
+    // Logout function
+    function logout() {
+      sessionStorage.removeItem('student');
+      window.location.href = 'index.html';
+    }
+
+    // Load student attendance data
+    async function loadStudentAttendance() {
+      if (!currentStudent) return;
+
+      loadingIndicator.style.display = "block";
+      table.style.display = "none";
+      statsCards.style.display = "none";
+      noDataMessage.style.display = "none";
+
+      // Reset attendance summary
+      attendanceSummary = {};
+
+      try {
+        const snapshot = await get(ref(db, "attendance"));
+        if (!snapshot.exists()) {
+          loadingIndicator.style.display = "none";
+          noDataMessage.style.display = "block";
+          return;
+        }
+
+        const allDates = snapshot.val();
+
+        // Process attendance data from Firebase structure
+        for (const dateKey in allDates) {
+          const classes = allDates[dateKey];
+          for (const classKey in classes) {
+            const records = classes[classKey];
+            for (const recordKey in records) {
+              const record = records[recordKey];
+
+              // Skip if record doesn't have attendanceData array
+              if (!record.attendanceData || !Array.isArray(record.attendanceData)) {
+                continue;
+              }
+
+              const subject = record.subject || "Unknown";
+              if (!attendanceSummary[subject]) {
+                attendanceSummary[subject] = { total: 0, present: 0, absent: 0 };
+              }
+
+              // Find student record safely - using rollNo to match
+              const studentRecord = record.attendanceData.find(
+                s => s && s.rollNo && s.rollNo.toLowerCase() === currentStudent.rollNo.toLowerCase()
+              );
+
+              if (studentRecord) {
+                attendanceSummary[subject].total++;
+                if (studentRecord.status === "Present") {
+                  attendanceSummary[subject].present++;
+                } else {
+                  attendanceSummary[subject].absent++;
+                }
+              }
+            }
+          }
+        }
+
+        // Display attendance data
+        displayAttendanceData();
+
+        // Automatically show popup after loading data
+        setTimeout(() => {
+          showAttendancePopup();
+        }, 1000);
+
+      } catch (error) {
+        console.error("Error fetching attendance:", error);
+        loadingIndicator.style.display = "none";
+        noDataMessage.style.display = "block";
+        noDataMessage.innerHTML = `
+          <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 15px;"></i>
+          <p>Error loading attendance data. Please try again.</p>
+        `;
+      }
+    }
+
+    // Display attendance data in table and stats
+    function displayAttendanceData() {
+      // Calculate overall statistics
+      let totalClasses = 0;
+      let totalPresent = 0;
+      let bestSubject = { name: "", percentage: 0 };
+      let worstSubject = { name: "", percentage: 100 };
+
+      tableBody.innerHTML = "";
+      for (const subject in attendanceSummary) {
+        const { total, present, absent } = attendanceSummary[subject];
+        const percentage = total > 0 ? ((present / total) * 100) : 0;
+
+        totalClasses += total;
+        totalPresent += present;
+
+        // Update best subject
+        if (percentage > bestSubject.percentage) {
+          bestSubject = { name: subject, percentage };
+        }
+
+        // Update worst subject
+        if (percentage < worstSubject.percentage && total > 0) {
+          worstSubject = { name: subject, percentage };
+        }
+
+        const percentageClass = percentage >= 75 ? "percentage-high" :
+          percentage >= 50 ? "percentage-medium" : "percentage-low";
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${subject}</td>
+          <td>${total}</td>
+          <td>${present}</td>
+          <td>${absent}</td>
+          <td class="percentage-cell ${percentageClass}">${percentage.toFixed(1)}%</td>
+        `;
+        tableBody.appendChild(row);
+      }
+
+      // Update statistics cards
+      const overallPercentage = totalClasses > 0 ? ((totalPresent / totalClasses) * 100) : 0;
+      const overallClass = overallPercentage >= 75 ? "percentage-high" :
+        overallPercentage >= 50 ? "percentage-medium" : "percentage-low";
+
+      document.getElementById('overallPercentage').textContent = `${overallPercentage.toFixed(1)}%`;
+      document.getElementById('overallPercentage').className = `stat-value ${overallClass}`;
+
+      document.getElementById('bestSubject').textContent = bestSubject.name || "-";
+      document.getElementById('bestPercentage').textContent = bestSubject.name ? `${bestSubject.percentage.toFixed(1)}%` : "0%";
+
+      document.getElementById('worstSubject').textContent = worstSubject.name || "-";
+      document.getElementById('worstPercentage').textContent = worstSubject.name ? `${worstSubject.percentage.toFixed(1)}%` : "0%";
+
+      // Update quick stats
+      document.getElementById('totalSubjects').textContent = Object.keys(attendanceSummary).length;
+      document.getElementById('totalClasses').textContent = totalClasses;
+      document.getElementById('totalPresent').textContent = totalPresent;
+      document.getElementById('overallQuick').textContent = `${overallPercentage.toFixed(1)}%`;
+
+      loadingIndicator.style.display = "none";
+
+      if (Object.keys(attendanceSummary).length > 0) {
+        table.style.display = "table";
+        statsCards.style.display = "grid";
+      } else {
+        noDataMessage.style.display = "block";
+      }
+    }
+
+    // Show attendance popup
+    function showAttendancePopup() {
+      if (!currentStudent || Object.keys(attendanceSummary).length === 0) {
+        // If no data, show a message
+        alert(`Welcome ${currentStudent?.name || 'Student'}!\n\nNo attendance data found yet. Please check back later.`);
+        return;
+      }
+
+      // Update popup header
+      document.getElementById('popupStudentName').textContent = currentStudent.name;
+      document.getElementById('popupStudentDetails').textContent =
+        `Roll No: ${currentStudent.rollNo} | Branch: ${currentStudent.branch || 'N/A'}`;
+
+      // Calculate overall percentage
+      let totalClasses = 0;
+      let totalPresent = 0;
+
+      for (const subject in attendanceSummary) {
+        totalClasses += attendanceSummary[subject].total;
+        totalPresent += attendanceSummary[subject].present;
+      }
+
+      const overallPercentage = totalClasses > 0 ? ((totalPresent / totalClasses) * 100) : 0;
+
+      // Update overall percentage
+      document.getElementById('popupOverallPercentage').textContent = `${overallPercentage.toFixed(1)}%`;
+
+      // Set attendance status message
+      let statusMessage = "Keep up the good work!";
+      if (overallPercentage < 75) {
+        statusMessage = "⚠️ Your attendance needs improvement.";
+      } else if (overallPercentage < 85) {
+        statusMessage = "✅ Good attendance!";
+      } else {
+        statusMessage = "🎉 Excellent attendance!";
+      }
+      document.getElementById('popupAttendanceStatus').textContent = statusMessage;
+
+      // Populate subject-wise attendance
+      const summaryContainer = document.getElementById('attendanceSummaryPopup');
+      summaryContainer.innerHTML = '';
+
+      for (const subject in attendanceSummary) {
+        const { total, present } = attendanceSummary[subject];
+        const percentage = total > 0 ? ((present / total) * 100) : 0;
+
+        const summaryItem = document.createElement('div');
+        summaryItem.className = 'summary-item';
+
+        const percentageClass = percentage >= 75 ? "percentage-high" :
+          percentage >= 50 ? "percentage-medium" : "percentage-low";
+
+        summaryItem.innerHTML = `
+          <div class="subject-name">${subject}</div>
+          <div class="attendance-percentage ${percentageClass}">${percentage.toFixed(1)}% (${present}/${total})</div>
+        `;
+
+        summaryContainer.appendChild(summaryItem);
+      }
+
+      // Show the popup
+      document.getElementById('attendancePopup').style.display = 'flex';
+    }
+
+    // Close attendance popup
+    function closeAttendancePopup() {
+      document.getElementById('attendancePopup').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('attendancePopup').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeAttendancePopup();
+      }
+    });
+
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', async () => {
+      updateDate();
+
+      // Check authentication
+      currentStudent = checkStudentAuth();
+      if (!currentStudent) return;
+
+      // Update student info in header
+      studentEmail.textContent = currentStudent.name || currentStudent.rollNo || 'Student';
+      welcomeStudentName.textContent = `Welcome, ${currentStudent.name || currentStudent.rollNo || 'Student'}!`;
+
+      // Load attendance data
+      await loadStudentAttendance();
+    });
+
+    // Make functions available globally
+    window.showAttendancePopup = showAttendancePopup;
+    window.closeAttendancePopup = closeAttendancePopup;
+    window.logout = logout;
+  </script>
+</body>
+
+</html>

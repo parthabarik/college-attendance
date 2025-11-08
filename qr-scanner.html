@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Scanner - Student Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #00c9a7 0%, #5a70d5 100%);
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-info img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .main-content {
+      padding: 25px 30px;
+      text-align: center;
+    }
+
+    .scanner-section {
+      margin: 20px 0;
+    }
+
+    .scanner-container {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    #video {
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .scanner-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 2px solid #00c9a7;
+      border-radius: 10px;
+      pointer-events: none;
+    }
+
+    .scanner-line {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background: #00c9a7;
+      top: 50%;
+      animation: scan 2s infinite linear;
+    }
+
+    @keyframes scan {
+      0% {
+        top: 10%;
+      }
+
+      50% {
+        top: 90%;
+      }
+
+      100% {
+        top: 10%;
+      }
+    }
+
+    .scanner-instructions {
+      margin: 20px 0;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      text-align: left;
+    }
+
+    .scanner-instructions h3 {
+      color: #5a70d5;
+      margin-bottom: 10px;
+    }
+
+    .scanner-instructions ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .scanner-instructions li {
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .scanner-instructions i {
+      color: #00c9a7;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 10px;
+    }
+
+    .btn-primary {
+      background: #00c9a7;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #00b398;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 201, 167, 0.3);
+    }
+
+    .btn-secondary {
+      background: #5a70d5;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #4a60c0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(90, 112, 213, 0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #5a70d5;
+      border: 1px solid #5a70d5;
+    }
+
+    .btn-outline:hover {
+      background: #f0f3ff;
+    }
+
+    .btn-logout {
+      background: #ff6b6b;
+      color: white;
+    }
+
+    .btn-logout:hover {
+      background: #ff5252;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+      font-size: 14px;
+      border-top: 1px solid #eee;
+    }
+
+    .status-message {
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 15px;
+      text-align: center;
+      display: none;
+    }
+
+    .status-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .status-info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    .scan-result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background: #f8f9fa;
+      display: none;
+    }
+
+    .result-success {
+      background: #e8f5e8;
+      color: #2d5016;
+      border: 1px solid #c3e6cb;
+    }
+
+    .result-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+      .user-info {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+        margin: 5px 0;
+      }
+
+      .scanner-container {
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><i class="fas fa-camera"></i> QR Code Scanner</h1>
+      <div class="user-info">
+        <img
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='40' r='30' fill='%2300c9a7'/><circle cx='50' cy='100' r='40' fill='%235a70d5'/></svg>"
+          alt="Student">
+        <span id="studentName">Loading...</span>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <h2>Scan QR Code for Attendance</h2>
+      <p>Point your camera at the QR code displayed by your teacher</p>
+
+      <div class="scanner-section">
+        <div class="scanner-container">
+          <video id="video" playsinline></video>
+          <div class="scanner-overlay">
+            <div class="scanner-line"></div>
+          </div>
+        </div>
+
+        <div class="scanner-instructions">
+          <h3><i class="fas fa-info-circle"></i> How to Scan:</h3>
+          <ul>
+            <li><i class="fas fa-check-circle"></i> Ensure good lighting</li>
+            <li><i class="fas fa-check-circle"></i> Hold steady</li>
+            <li><i class="fas fa-check-circle"></i> Position QR code within frame</li>
+            <li><i class="fas fa-check-circle"></i> Wait for automatic detection</li>
+          </ul>
+        </div>
+
+        <div class="status-message" id="scannerStatus">
+          <i class="fas fa-sync-alt fa-spin"></i> Initializing camera...
+        </div>
+
+        <div class="scan-result" id="scanResult">
+          <!-- Scan results will be shown here -->
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-primary" id="startScannerBtn" onclick="startScanner()">
+          <i class="fas fa-camera"></i> Start Scanner
+        </button>
+        <button class="btn btn-secondary" id="stopScannerBtn" onclick="stopScanner()" style="display: none;">
+          <i class="fas fa-stop"></i> Stop Scanner
+        </button>
+        <a href="student-dashboard.html" class="btn btn-outline">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <button class="btn btn-logout" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>TAT Attendance Management System © 2023 | QR Scanner</p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getDatabase, ref, get, set, update, push } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCe0DvO_8prqSxzzr7A8AfiGyOqqj-_DP4",
+      authDomain: "attendance-67f62.firebaseapp.com",
+      databaseURL: "https://attendance-67f62-default-rtdb.firebaseio.com",
+      projectId: "attendance-67f62",
+      storageBucket: "attendance-67f62.firebasestorage.app",
+      messagingSenderId: "459244634281",
+      appId: "1:459244634281:web:e8630366dc5cfe31dca9b8",
+      measurementId: "G-RM00FSG6Q9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Global variables
+    let currentStudent = null;
+    let videoStream = null;
+    let scannerActive = false;
+    let scanCanvas = null;
+    let scanContext = null;
+    let lastScannedCode = null;
+    let lastScanTime = 0;
+    let attendanceMarkedForSession = {}; // Track which sessions student has marked attendance for
+    const SCAN_COOLDOWN = 3000; // 3 seconds cooldown between scans
+
+    // Check if student is logged in
+    function checkStudentAuth() {
+      const student = sessionStorage.getItem('student');
+      if (!student) {
+        window.location.href = 'student-login.html';
+        return null;
+      }
+      try {
+        const parsedStudent = JSON.parse(student);
+
+        // Check if session data is outdated (missing id field)
+        if (!parsedStudent.id) {
+          console.warn('Old session data detected - missing ID field');
+          // Try to use fullRollNo or rollNo as fallback
+          if (parsedStudent.fullRollNo) {
+            parsedStudent.id = parsedStudent.fullRollNo;
+            console.log('Fixed: Using fullRollNo as ID:', parsedStudent.id);
+          } else if (parsedStudent.rollNo) {
+            // If only rollNo exists, we need to rebuild the ID
+            // Construct fullRollNo from available data
+            if (parsedStudent.branch && parsedStudent.section) {
+              parsedStudent.fullRollNo = `${parsedStudent.branch}-${parsedStudent.section}-${parsedStudent.rollNo}`;
+              parsedStudent.id = parsedStudent.fullRollNo;
+              console.log('Fixed: Constructed ID:', parsedStudent.id);
+            } else {
+              // Can't fix - force re-login
+              console.error('Cannot construct ID - forcing re-login');
+              alert('Your session is outdated. Please login again.');
+              sessionStorage.removeItem('student');
+              window.location.href = 'student-login.html';
+              return null;
+            }
+          } else {
+            // No way to fix - force re-login
+            alert('Your session is outdated. Please login again.');
+            sessionStorage.removeItem('student');
+            window.location.href = 'student-login.html';
+            return null;
+          }
+          // Save the fixed student data back to sessionStorage
+          sessionStorage.setItem('student', JSON.stringify(parsedStudent));
+        }
+
+        // Ensure student has required fields
+        if (!parsedStudent.rollNo && parsedStudent.fullRollNo) {
+          parsedStudent.rollNo = parsedStudent.fullRollNo;
+        }
+        return parsedStudent;
+      } catch (error) {
+        console.error('Error parsing student data:', error);
+        sessionStorage.removeItem('student');
+        window.location.href = 'student-login.html';
+        return null;
+      }
+    }
+
+    // Update scanner status
+    function updateScannerStatus(message, type = 'info') {
+      const statusElement = document.getElementById('scannerStatus');
+      statusElement.textContent = message;
+      statusElement.className = `status-message status-${type}`;
+      statusElement.style.display = 'block';
+    }
+
+    // Show scan result
+    function showScanResult(message, isSuccess = true) {
+      const resultElement = document.getElementById('scanResult');
+      resultElement.innerHTML = message;
+      resultElement.className = `scan-result ${isSuccess ? 'result-success' : 'result-error'}`;
+      resultElement.style.display = 'block';
+
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        resultElement.style.display = 'none';
+      }, 5000);
+    }
+
+    // Start QR Scanner
+    async function startScanner() {
+      const video = document.getElementById('video');
+
+      try {
+        updateScannerStatus('Requesting camera permission...', 'info');
+
+        // Get camera stream
+        videoStream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "environment",
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        });
+
+        video.srcObject = videoStream;
+
+        video.onloadedmetadata = () => {
+          video.play();
+          updateScannerStatus('Camera ready. Scanning for QR codes...', 'info');
+          document.getElementById('startScannerBtn').style.display = 'none';
+          document.getElementById('stopScannerBtn').style.display = 'inline-flex';
+          scannerActive = true;
+          startQRDetection();
+        };
+
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        updateScannerStatus('Error accessing camera: ' + error.message, 'error');
+      }
+    }
+
+    // Start QR Code Detection
+    function startQRDetection() {
+      const video = document.getElementById('video');
+
+      // Create canvas for image processing
+      scanCanvas = document.createElement('canvas');
+      scanContext = scanCanvas.getContext('2d');
+
+      function scanFrame() {
+        if (!scannerActive) return;
+
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+          scanCanvas.width = video.videoWidth;
+          scanCanvas.height = video.videoHeight;
+
+          // Draw video frame to canvas
+          scanContext.drawImage(video, 0, 0, scanCanvas.width, scanCanvas.height);
+
+          // Get image data for QR detection
+          const imageData = scanContext.getImageData(0, 0, scanCanvas.width, scanCanvas.height);
+
+          // Detect QR code
+          const code = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: "dontInvert",
+          });
+
+          if (code) {
+            // QR code detected
+            handleQRCodeDetected(code.data);
+          }
+        }
+
+        // Continue scanning
+        if (scannerActive) {
+          requestAnimationFrame(scanFrame);
+        }
+      }
+
+      // Start scanning
+      scanFrame();
+    }
+
+    // Handle detected QR code
+    async function handleQRCodeDetected(qrData) {
+      // Prevent rapid repeated scans of the same code
+      const now = Date.now();
+      if (lastScannedCode === qrData && (now - lastScanTime) < SCAN_COOLDOWN) {
+        return; // Skip if same code scanned within cooldown period
+      }
+
+      try {
+        // Validate student is logged in
+        if (!currentStudent || !currentStudent.id) {
+          console.error('Student data issue:', {
+            currentStudent: currentStudent,
+            hasId: currentStudent ? currentStudent.id : 'no student'
+          });
+          throw new Error('Student session expired. Please logout and login again to continue.');
+        }
+
+        // Parse QR data
+        let qrInfo;
+        try {
+          qrInfo = JSON.parse(qrData);
+        } catch (parseError) {
+          throw new Error('Invalid QR code. Please scan the attendance QR code shown by your teacher.');
+        }
+
+        // Validate QR data structure
+        if (!qrInfo.sessionId || !qrInfo.code || !qrInfo.classKey || !qrInfo.dateKey) {
+          throw new Error('Invalid QR code format. Please scan a valid attendance QR code.');
+        }
+
+        // Check if student has already marked attendance for this session (in memory)
+        if (attendanceMarkedForSession[qrInfo.sessionId]) {
+          showScanResult(`
+            <i class="fas fa-info-circle"></i> 
+            <strong>Already Scanned!</strong><br>
+            You have already marked your attendance for this class.<br>
+            You cannot scan again for the same session.
+          `, true);
+
+          // Stop scanner completely - no more scanning allowed
+          stopScanner();
+          return;
+        }
+
+        // Check if code is expired
+        const expiresAt = new Date(qrInfo.expiresAt);
+        if (new Date() > expiresAt) {
+          showScanResult(`
+            <i class="fas fa-exclamation-triangle"></i> 
+            <strong>QR Code Expired</strong><br>
+            Please ask your teacher for a new QR code
+          `, false);
+
+          // Continue scanning for the next QR code
+          scannerActive = false;
+          setTimeout(() => {
+            scannerActive = true;
+            startQRDetection();
+          }, 2000);
+          return;
+        }
+
+        // Validate session and code with Firebase
+        const sessionSnapshot = await get(ref(db, `qrSessions/${qrInfo.sessionId}`));
+
+        if (!sessionSnapshot.exists()) {
+          throw new Error('Invalid attendance session');
+        }
+
+        const session = sessionSnapshot.val();
+
+        if (session.status !== 'active') {
+          throw new Error('Attendance session is no longer active');
+        }
+
+        // Check if current code matches
+        if (!session.currentCode || session.currentCode.code !== qrInfo.code) {
+          throw new Error('Invalid QR code. Please scan the latest code.');
+        }
+
+        // Check if student has already scanned
+        if (session.scannedStudents && session.scannedStudents[currentStudent.id]) {
+          // Mark in memory that this session is done and save
+          attendanceMarkedForSession[qrInfo.sessionId] = true;
+          saveMarkedSessions(); // Persist to sessionStorage
+
+          showScanResult(`
+            <i class="fas fa-check-circle"></i> 
+            <strong>Attendance Already Marked</strong><br>
+            You have already marked your attendance for this session.<br>
+            Scanner has been stopped.
+          `, true);
+
+          // Stop scanner completely - attendance already marked
+          stopScanner();
+          return;
+        }
+
+        // Mark attendance
+        await markAttendance(session, qrInfo);
+
+      } catch (error) {
+        console.error('QR code processing error:', error);
+        showScanResult(`
+          <i class="fas fa-exclamation-triangle"></i> 
+          <strong>Scan Failed</strong><br>
+          ${error.message}
+        `, false);
+
+        // Continue scanning after showing error
+        scannerActive = false;
+        setTimeout(() => {
+          scannerActive = true;
+          startQRDetection();
+        }, 2000);
+      }
+    }
+
+    // Mark attendance in Firebase
+    async function markAttendance(session, qrInfo) {
+      // Validate student data
+      if (!currentStudent || !currentStudent.id) {
+        throw new Error('Student information is missing. Please login again.');
+      }
+
+      const studentAttendanceData = {
+        studentId: currentStudent.id,
+        rollNo: currentStudent.rollNo || currentStudent.id,
+        name: currentStudent.name || 'Unknown Student',
+        timestamp: new Date().toISOString(),
+        qrCode: qrInfo.code,
+        sessionId: qrInfo.sessionId
+      };
+
+      try {
+        // Add student to scanned students in session
+        await set(ref(db, `qrSessions/${qrInfo.sessionId}/scannedStudents/${currentStudent.id}`), studentAttendanceData);
+
+        // Also save to main attendance records
+        const attendanceRecord = {
+          subject: session.subject,
+          period: session.period,
+          teacher: session.teacherName,
+          classStartTime: session.startTime,
+          classEndTime: session.endTime,
+          attendanceMethod: 'QR',
+          student: studentAttendanceData
+        };
+
+        const attendanceRef = ref(db, `attendance/${qrInfo.dateKey}/${qrInfo.classKey}`);
+        const newRecordRef = push(attendanceRef);
+        await set(newRecordRef, attendanceRecord);
+
+        // Mark this session as completed in memory and save to sessionStorage
+        attendanceMarkedForSession[qrInfo.sessionId] = true;
+        saveMarkedSessions(); // Persist to sessionStorage
+
+        // Update last scanned info to prevent duplicate scans
+        lastScannedCode = qrInfo.sessionId + qrInfo.code;
+        lastScanTime = Date.now();
+
+        // Show success message
+        showScanResult(`
+          <i class="fas fa-check-circle"></i> 
+          <strong>Attendance Marked Successfully!</strong><br>
+          Subject: ${session.subject}<br>
+          Teacher: ${session.teacherName}<br>
+          Time: ${new Date().toLocaleTimeString()}<br>
+          <br>
+          <small>Scanner has been stopped. You cannot mark attendance again for this session.</small>
+        `, true);
+
+        // Stop scanner completely after successful attendance marking
+        // Student cannot scan again for this session
+        stopScanner();
+
+      } catch (error) {
+        throw new Error('Failed to save attendance: ' + error.message);
+      }
+    }
+
+    // Stop QR Scanner
+    function stopScanner() {
+      scannerActive = false;
+
+      const video = document.getElementById('video');
+      if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+        videoStream = null;
+      }
+
+      video.srcObject = null;
+
+      document.getElementById('startScannerBtn').style.display = 'inline-flex';
+      document.getElementById('stopScannerBtn').style.display = 'none';
+
+      updateScannerStatus('Scanner stopped', 'info');
+    }
+
+    // Save marked sessions to sessionStorage for persistence
+    function saveMarkedSessions() {
+      try {
+        sessionStorage.setItem('markedAttendanceSessions', JSON.stringify(attendanceMarkedForSession));
+        console.log('Saved marked sessions:', attendanceMarkedForSession);
+      } catch (e) {
+        console.error('Error saving marked sessions:', e);
+      }
+    }
+
+    // Logout function
+    function logout() {
+      stopScanner();
+      sessionStorage.removeItem('student');
+      sessionStorage.removeItem('markedAttendanceSessions'); // Clear marked sessions on logout
+      window.location.href = 'index.html';
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check authentication
+      currentStudent = checkStudentAuth();
+      if (!currentStudent) return;
+
+      // Debug: Log student data
+      console.log('Current Student Data:', currentStudent);
+      console.log('Student ID:', currentStudent.id);
+      console.log('Student Name:', currentStudent.name);
+
+      // Load previously marked sessions from sessionStorage
+      const savedSessions = sessionStorage.getItem('markedAttendanceSessions');
+      if (savedSessions) {
+        try {
+          attendanceMarkedForSession = JSON.parse(savedSessions);
+          console.log('Loaded marked sessions:', attendanceMarkedForSession);
+        } catch (e) {
+          console.error('Error loading marked sessions:', e);
+          attendanceMarkedForSession = {};
+        }
+      }
+
+      // Display student name
+      document.getElementById('studentName').textContent = currentStudent.name || currentStudent.rollNo || 'Student';
+
+      // Show warning if student ID is missing
+      if (!currentStudent.id) {
+        updateScannerStatus('Warning: Please logout and login again to update your session.', 'error');
+      }
+
+      // Auto-start scanner (optional)
+      // startScanner();
+    });
+
+    // Make functions available globally
+    window.startScanner = startScanner;
+    window.stopScanner = stopScanner;
+    window.logout = logout;
+  </script>
+</body>
+
+</html>

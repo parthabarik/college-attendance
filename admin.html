@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      padding: 20px;
+      min-height: 100vh;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding: 15px 25px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    h1 {
+      color: #4a6cf7;
+      font-size: 28px;
+    }
+    
+    .date-display {
+      background: #f0f5ff;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #4a6cf7;
+    }
+    
+    .nav-tabs {
+      display: flex;
+      background: white;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    .tab {
+      padding: 15px 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      text-align: center;
+      flex: 1;
+    }
+    
+    .tab.active {
+      background: #4a6cf7;
+      color: white;
+    }
+    
+    .tab:hover:not(.active) {
+      background: #f0f5ff;
+    }
+    
+    .tab-content {
+      display: none;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 25px;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .form-section {
+      flex: 1;
+      min-width: 250px;
+    }
+    
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #444;
+    }
+    
+    input, select {
+      padding: 12px;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      background: #f9f9f9;
+      transition: border-color 0.3s;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #4a6cf7;
+      box-shadow: 0 0 0 2px rgba(74, 108, 247, 0.2);
+    }
+    
+    button {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 16px;
+    }
+    
+    .btn-primary {
+      background: #4a6cf7;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #3a5cd8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(74, 108, 247, 0.3);
+    }
+    
+    .btn-secondary {
+      background: #00c9a7;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #00b098;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 201, 167, 0.3);
+    }
+    
+    .btn-info {
+      background: #17a2b8;
+      color: white;
+    }
+    
+    .btn-info:hover {
+      background: #138496;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+    }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    
+    .data-table th, .data-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .data-table th {
+      background: #f0f5ff;
+      font-weight: bold;
+      color: #4a6cf7;
+    }
+    
+    .data-table tr:hover {
+      background: #f9fbfe;
+    }
+    
+    .charts-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .chart-container {
+      flex: 1;
+      min-width: 300px;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    .chart-title {
+      text-align: center;
+      margin-bottom: 15px;
+      color: #4a6cf7;
+      font-weight: bold;
+    }
+    
+    .logout {
+      display: inline-block;
+      padding: 12px 25px;
+      background: #ff4d4d;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .logout:hover {
+      background: #cc0000;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 77, 77, 0.3);
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+      display: none;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 700px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .modal-header {
+      background: linear-gradient(135deg, #4a6cf7 0%, #00c9a7 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 15px 15px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-header h2 {
+      font-size: 22px;
+      font-weight: 600;
+    }
+    
+    .close-modal {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+    
+    .close-modal:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .modal-body {
+      padding: 25px;
+    }
+    
+    .student-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .info-item {
+      margin-bottom: 15px;
+    }
+    
+    .info-label {
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 5px;
+    }
+    
+    .info-value {
+      color: #333;
+    }
+    
+    .marks-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    
+    .marks-table th {
+      background: #f0f5ff;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #4a6cf7;
+      border-bottom: 2px solid #eee;
+    }
+    
+    .marks-table td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .marks-table tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+    
+    .grade-A { color: #00c9a7; font-weight: 600; }
+    .grade-B { color: #4a6cf7; font-weight: 600; }
+    .grade-C { color: #ffa500; font-weight: 600; }
+    .grade-D { color: #ff6b6b; font-weight: 600; }
+    .grade-F { color: #cc0000; font-weight: 600; }
+    
+    .search-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .search-input {
+      flex: 1;
+    }
+    
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .nav-tabs {
+        flex-direction: column;
+      }
+      
+      .charts-row {
+        flex-direction: column;
+      }
+      
+      .student-info {
+        grid-template-columns: 1fr;
+      }
+      
+      .modal-content {
+        width: 95%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Admin Dashboard</h1>
+      <div class="date-display" id="currentDate"></div>
+    </div>
+
+    <div class="nav-tabs">
+      <div class="tab active" onclick="switchTab('students')">Student Management</div>
+      <div class="tab" onclick="switchTab('teachers')">Teacher Management</div>
+      <div class="tab" onclick="switchTab('analytics')">Data Analytics</div>
+    </div>
+
+    <!-- Student Management Tab -->
+    <div id="students" class="tab-content active">
+      <h2>Student Search</h2>
+      <div class="search-container">
+        <div class="form-section search-input">
+          <input type="text" id="searchRollNo" placeholder="Enter Student Roll Number (e.g., R001)">
+        </div>
+        <button class="btn-info" onclick="searchStudent()">
+          <i class="fas fa-search"></i> Search Student
+        </button>
+      </div>
+
+      <h2>Add New Student</h2>
+      <div class="form-row">
+        <div class="form-section">
+          <label for="studentName">Full Name:</label>
+          <input type="text" id="studentName" placeholder="e.g., Aditya Sharma">
+        </div>
+        <div class="form-section">
+          <label for="studentRoll">Roll Number:</label>
+          <input type="text" id="studentRoll" placeholder="e.g., R001">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-section">
+          <label for="studentReg">Registration Number:</label>
+          <input type="text" id="studentReg" placeholder="e.g., REG2023001">
+        </div>
+        <div class="form-section">
+          <label for="studentBranch">Branch:</label>
+          <select id="studentBranch">
+            <option value="">-- Select Branch --</option>
+            <option value="CSE">Computer Science</option>
+            <option value="ECE">Electronics & Communication</option>
+            <option value="ME">Mechanical Engineering</option>
+            <option value="CE">Civil Engineering</option>
+            <option value="EE">Electrical Engineering</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="addStudent()">Add Student</button>
+
+      <h2 style="margin-top: 30px;">Student List</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Roll No.</th>
+            <th>Name</th>
+            <th>Registration No.</th>
+            <th>Branch</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="studentList">
+          <!-- Student data will be added here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Teacher Management Tab -->
+    <div id="teachers" class="tab-content">
+      <h2>Add New Teacher</h2>
+      <div class="form-row">
+        <div class="form-section">
+          <label for="teacherName">Full Name:</label>
+          <input type="text" id="teacherName" placeholder="e.g., Dr. Sunita Patel">
+        </div>
+        <div class="form-section">
+          <label for="teacherSubject">Subject:</label>
+          <input type="text" id="teacherSubject" placeholder="e.g., Data Structures">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-section">
+          <label for="teacherEmail">Email:</label>
+          <input type="email" id="teacherEmail" placeholder="e.g., sunita.patel@example.com">
+        </div>
+        <div class="form-section">
+          <label for="teacherPhone">Phone:</label>
+          <input type="tel" id="teacherPhone" placeholder="e.g., 9876543210">
+        </div>
+      </div>
+      <button class="btn-primary" onclick="addTeacher()">Add Teacher</button>
+
+      <h2 style="margin-top: 30px;">Teacher List</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Subject</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="teacherList">
+          <!-- Teacher data will be added here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Analytics Tab -->
+    <div id="analytics" class="tab-content">
+      <h2>Data Analytics</h2>
+      
+      <div class="charts-row">
+        <div class="chart-container">
+          <div class="chart-title">Students by Branch</div>
+          <canvas id="branchChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <div class="chart-title">Attendance Overview</div>
+          <canvas id="attendanceChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 25px;">
+      <a class="logout" href="index.html">Logout</a>
+    </div>
+  </div>
+
+  <!-- Student Details Modal -->
+  <div class="modal-overlay" id="studentModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-user-graduate"></i> Student Details</h2>
+        <button class="close-modal" onclick="closeStudentModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="student-info">
+          <div>
+            <div class="info-item">
+              <div class="info-label">Roll Number</div>
+              <div class="info-value" id="modalRollNo">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Full Name</div>
+              <div class="info-value" id="modalName">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Registration Number</div>
+              <div class="info-value" id="modalRegNo">-</div>
+            </div>
+          </div>
+          <div>
+            <div class="info-item">
+              <div class="info-label">Branch</div>
+              <div class="info-value" id="modalBranch">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Semester</div>
+              <div class="info-value" id="modalSemester">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">CGPA</div>
+              <div class="info-value" id="modalCGPA">-</div>
+            </div>
+          </div>
+        </div>
+        
+        <h3><i class="fas fa-chart-line"></i> Semester Marks</h3>
+        <table class="marks-table" id="marksTable">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Marks</th>
+              <th>Grade</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="marksBody">
+            <!-- Marks rows will be added here -->
+          </tbody>
+        </table>
+        <div id="noMarks" style="text-align: center; padding: 20px; color: #777; display: none;">
+          <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 15px;"></i>
+          <p>No marks data available for this student.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  <script>
+    // Set current date
+    function updateDate() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+    }
+    
+    // Tab switching function
+    function switchTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Show selected tab
+      document.getElementById(tabName).classList.add('active');
+      
+      // Update active tab style
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      event.currentTarget.classList.add('active');
+      
+      // If analytics tab is selected, render charts
+      if (tabName === 'analytics') {
+        renderCharts();
+      }
+    }
+    
+    // Student data array with extended information
+    let students = [
+      { 
+        name: 'Aditya Sharma', 
+        rollNo: 'R001', 
+        regNo: 'REG2023001', 
+        branch: 'CSE',
+        semester: '5th',
+        cgpa: '8.7',
+        marks: [
+          { subject: 'Mathematics', marks: 85, grade: 'A', status: 'Pass' },
+          { subject: 'Data Structures', marks: 78, grade: 'B', status: 'Pass' },
+          { subject: 'Algorithms', marks: 92, grade: 'A', status: 'Pass' },
+          { subject: 'Database Systems', marks: 88, grade: 'A', status: 'Pass' },
+          { subject: 'Operating Systems', marks: 81, grade: 'A', status: 'Pass' }
+        ]
+      },
+      { 
+        name: 'Shipra Singh', 
+        rollNo: 'R002', 
+        regNo: 'REG2023002', 
+        branch: 'ECE',
+        semester: '5th',
+        cgpa: '7.9',
+        marks: [
+          { subject: 'Mathematics', marks: 76, grade: 'B', status: 'Pass' },
+          { subject: 'Digital Electronics', marks: 82, grade: 'A', status: 'Pass' },
+          { subject: 'Signals & Systems', marks: 79, grade: 'B', status: 'Pass' },
+          { subject: 'Communication Systems', marks: 85, grade: 'A', status: 'Pass' },
+          { subject: 'Microprocessors', marks: 72, grade: 'B', status: 'Pass' }
+        ]
+      },
+      { 
+        name: 'Rahul Kumar', 
+        rollNo: 'R003', 
+        regNo: 'REG2023003', 
+        branch: 'ME',
+        semester: '5th',
+        cgpa: '8.2',
+        marks: [
+          { subject: 'Mathematics', marks: 80, grade: 'A', status: 'Pass' },
+          { subject: 'Thermodynamics', marks: 75, grade: 'B', status: 'Pass' },
+          { subject: 'Fluid Mechanics', marks: 82, grade: 'A', status: 'Pass' },
+          { subject: 'Machine Design', marks: 78, grade: 'B', status: 'Pass' },
+          { subject: 'Manufacturing Processes', marks: 85, grade: 'A', status: 'Pass' }
+        ]
+      },
+      { 
+        name: 'Priya Patel', 
+        rollNo: 'R004', 
+        regNo: 'REG2023004', 
+        branch: 'CSE',
+        semester: '5th',
+        cgpa: '9.1',
+        marks: [
+          { subject: 'Mathematics', marks: 92, grade: 'A', status: 'Pass' },
+          { subject: 'Data Structures', marks: 89, grade: 'A', status: 'Pass' },
+          { subject: 'Algorithms', marks: 94, grade: 'A', status: 'Pass' },
+          { subject: 'Database Systems', marks: 91, grade: 'A', status: 'Pass' },
+          { subject: 'Operating Systems', marks: 88, grade: 'A', status: 'Pass' }
+        ]
+      },
+      { 
+        name: 'Amit Verma', 
+        rollNo: 'R005', 
+        regNo: 'REG2023005', 
+        branch: 'EE',
+        semester: '5th',
+        cgpa: '7.5',
+        marks: [
+          { subject: 'Mathematics', marks: 72, grade: 'B', status: 'Pass' },
+          { subject: 'Circuit Theory', marks: 68, grade: 'C', status: 'Pass' },
+          { subject: 'Power Systems', marks: 75, grade: 'B', status: 'Pass' },
+          { subject: 'Electrical Machines', marks: 70, grade: 'B', status: 'Pass' },
+          { subject: 'Control Systems', marks: 79, grade: 'B', status: 'Pass' }
+        ]
+      }
+    ];
+    
+    // Teacher data array
+    let teachers = [
+      { name: 'Dr. Sunita Patel', subject: 'Data Structures', email: 'sunitap@example.com', phone: '9876543210' },
+      { name: 'Prof. Rajesh Kumar', subject: 'Mathematics', email: 'rajeshk@example.com', phone: '9876543211' },
+      { name: 'Dr. Anjali Deshmukh', subject: 'Algorithms', email: 'anjalid@example.com', phone: '9876543212' }
+    ];
+    
+    // Render student list
+    function renderStudentList() {
+      const studentList = document.getElementById('studentList');
+      studentList.innerHTML = '';
+      
+      students.forEach((student, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${student.rollNo}</td>
+          <td>${student.name}</td>
+          <td>${student.regNo}</td>
+          <td>${student.branch}</td>
+          <td>
+            <button class="btn-secondary" onclick="viewStudentDetails('${student.rollNo}')">View Details</button>
+            <button class="logout" onclick="deleteStudent(${index})" style="padding: 8px 15px;">Delete</button>
+          </td>
+        `;
+        studentList.appendChild(row);
+      });
+    }
+    
+    // Render teacher list
+    function renderTeacherList() {
+      const teacherList = document.getElementById('teacherList');
+      teacherList.innerHTML = '';
+      
+      teachers.forEach((teacher, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${teacher.name}</td>
+          <td>${teacher.subject}</td>
+          <td>${teacher.email}</td>
+          <td>${teacher.phone}</td>
+          <td>
+            <button class="btn-secondary" onclick="editTeacher(${index})">Edit</button>
+            <button class="logout" onclick="deleteTeacher(${index})" style="padding: 8px 15px;">Delete</button>
+          </td>
+        `;
+        teacherList.appendChild(row);
+      });
+    }
+    
+    // Add new student
+    function addStudent() {
+      const name = document.getElementById('studentName').value;
+      const rollNo = document.getElementById('studentRoll').value;
+      const regNo = document.getElementById('studentReg').value;
+      const branch = document.getElementById('studentBranch').value;
+      
+      if (!name || !rollNo || !regNo || !branch) {
+        alert('Please fill all fields');
+        return;
+      }
+      
+      // Add basic student info (marks will be empty initially)
+      students.push({ 
+        name, 
+        rollNo, 
+        regNo, 
+        branch,
+        semester: '5th',
+        cgpa: 'N/A',
+        marks: []
+      });
+      
+      renderStudentList();
+      
+      // Clear form
+      document.getElementById('studentName').value = '';
+      document.getElementById('studentRoll').value = '';
+      document.getElementById('studentReg').value = '';
+      document.getElementById('studentBranch').value = '';
+    }
+    
+    // Add new teacher
+    function addTeacher() {
+      const name = document.getElementById('teacherName').value;
+      const subject = document.getElementById('teacherSubject').value;
+      const email = document.getElementById('teacherEmail').value;
+      const phone = document.getElementById('teacherPhone').value;
+      
+      if (!name || !subject || !email || !phone) {
+        alert('Please fill all fields');
+        return;
+      }
+      
+      teachers.push({ name, subject, email, phone });
+      renderTeacherList();
+      
+      // Clear form
+      document.getElementById('teacherName').value = '';
+      document.getElementById('teacherSubject').value = '';
+      document.getElementById('teacherEmail').value = '';
+      document.getElementById('teacherPhone').value = '';
+    }
+    
+    // View student details
+    function viewStudentDetails(rollNo) {
+      const student = students.find(s => s.rollNo === rollNo);
+      if (!student) {
+        alert("Student not found!");
+        return;
+      }
+
+      // Populate student info
+      document.getElementById('modalRollNo').textContent = student.rollNo;
+      document.getElementById('modalName').textContent = student.name;
+      document.getElementById('modalRegNo').textContent = student.regNo;
+      document.getElementById('modalBranch').textContent = student.branch;
+      document.getElementById('modalSemester').textContent = student.semester;
+      document.getElementById('modalCGPA').textContent = student.cgpa;
+
+      // Populate marks table
+      const marksBody = document.getElementById('marksBody');
+      const noMarks = document.getElementById('noMarks');
+      
+      if (student.marks && student.marks.length > 0) {
+        marksBody.innerHTML = '';
+        student.marks.forEach(mark => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${mark.subject}</td>
+            <td>${mark.marks}/100</td>
+            <td class="grade-${mark.grade}">${mark.grade}</td>
+            <td>${mark.status}</td>
+          `;
+          marksBody.appendChild(row);
+        });
+        marksBody.style.display = 'table-row-group';
+        noMarks.style.display = 'none';
+      } else {
+        marksBody.style.display = 'none';
+        noMarks.style.display = 'block';
+      }
+
+      // Show modal
+      document.getElementById('studentModal').style.display = 'flex';
+    }
+    
+    // Close student modal
+    function closeStudentModal() {
+      document.getElementById('studentModal').style.display = 'none';
+    }
+    
+    // Search student by roll number
+    function searchStudent() {
+      const searchValue = document.getElementById('searchRollNo').value.trim().toUpperCase();
+      if (!searchValue) {
+        alert("Please enter a roll number to search.");
+        return;
+      }
+
+      const student = students.find(s => s.rollNo === searchValue);
+      if (student) {
+        viewStudentDetails(student.rollNo);
+      } else {
+        alert("Student with roll number " + searchValue + " not found.");
+      }
+    }
+    
+    // Delete student
+    function deleteStudent(index) {
+      if (confirm(`Are you sure you want to delete ${students[index].name}?`)) {
+        students.splice(index, 1);
+        renderStudentList();
+      }
+    }
+    
+    // Edit teacher (placeholder)
+    function editTeacher(index) {
+      alert(`Edit functionality for ${teachers[index].name} would be implemented here`);
+    }
+    
+    // Delete teacher
+    function deleteTeacher(index) {
+      if (confirm(`Are you sure you want to delete ${teachers[index].name}?`)) {
+        teachers.splice(index, 1);
+        renderTeacherList();
+      }
+    }
+    
+    // Render charts for analytics
+    function renderCharts() {
+      // Branch distribution chart
+      const branchCtx = document.getElementById('branchChart').getContext('2d');
+      new Chart(branchCtx, {
+        type: 'pie',
+        data: {
+          labels: ['CSE', 'ECE', 'ME', 'CE', 'EE'],
+          datasets: [{
+            data: [35, 25, 20, 12, 8],
+            backgroundColor: ['#4a6cf7', '#00c9a7', '#ffa500', '#ff4d4d', '#9b59b6']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+      
+      // Attendance chart
+      const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
+      new Chart(attendanceCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+          datasets: [{
+            label: 'Attendance Percentage',
+            data: [85, 78, 90, 82, 88, 75],
+            backgroundColor: '#4a6cf7'
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                callback: function(value) {
+                  return value + '%';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    // Allow Enter key to trigger search
+    document.getElementById('searchRollNo').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        searchStudent();
+      }
+    });
+    
+    // Close modal when clicking outside
+    document.getElementById('studentModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeStudentModal();
+      }
+    });
+    
+    // Initialize on page load
+    updateDate();
+    renderStudentList();
+    renderTeacherList();
+  </script>
+</body>
+</html>

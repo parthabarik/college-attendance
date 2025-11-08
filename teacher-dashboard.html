@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard - Attendance System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #00c9a7 0%, #5a70d5 100%);
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .user-info img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    .date-display {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: 500;
+      text-align: center;
+      min-width: 200px;
+    }
+    
+    .date-display .time {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    
+    .date-display .date {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    .main-content {
+      padding: 25px 30px;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
+    
+    .card-header {
+      background: #f8f9fa;
+      padding: 15px 20px;
+      border-bottom: 1px solid #eee;
+      font-weight: 600;
+      color: #444;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .card-body {
+      padding: 20px;
+    }
+    
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+    
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: #00c9a7;
+      box-shadow: 0 0 0 3px rgba(0, 201, 167, 0.2);
+    }
+    
+    .student-list-container {
+      margin-top: 10px;
+    }
+    
+    .student-list-header {
+      display: grid;
+      grid-template-columns: 80px 1fr 100px 120px;
+      gap: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #444;
+      border-bottom: 2px solid #eee;
+    }
+    
+    .student-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .student-item {
+      display: grid;
+      grid-template-columns: 80px 1fr 100px 120px;
+      gap: 15px;
+      padding: 15px;
+      align-items: center;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background 0.2s;
+    }
+    
+    .student-item:hover {
+      background: #f9f9f9;
+    }
+    
+    .student-item:last-child {
+      border-bottom: none;
+    }
+    
+    .attendance-checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: #00c9a7;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background: #00c9a7;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #00b398;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 201, 167, 0.3);
+    }
+    
+    .btn-secondary {
+      background: #5a70d5;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #4a60c0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(90, 112, 213, 0.3);
+    }
+    
+    .btn-outline {
+      background: transparent;
+      color: #5a70d5;
+      border: 1px solid #5a70d5;
+    }
+    
+    .btn-outline:hover {
+      background: #f0f3ff;
+    }
+    
+    .btn-info {
+      background: #17a2b8;
+      color: white;
+    }
+    
+    .btn-info:hover {
+      background: #138496;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+    }
+    
+    .btn-logout {
+      background: #ff6b6b;
+      color: white;
+    }
+    
+    .btn-logout:hover {
+      background: #ff5252;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+    }
+    
+    .attendance-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .summary-card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    .summary-card.present {
+      border-top: 4px solid #00c9a7;
+    }
+    
+    .summary-card.absent {
+      border-top: 4px solid #ff6b6b;
+    }
+    
+    .summary-value {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+    
+    .present .summary-value {
+      color: #00c9a7;
+    }
+    
+    .absent .summary-value {
+      color: #ff6b6b;
+    }
+    
+    .summary-label {
+      color: #777;
+      font-size: 14px;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+      font-size: 14px;
+      border-top: 1px solid #eee;
+    }
+    
+    /* Student Details Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+      display: none;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .modal-header {
+      background: linear-gradient(135deg, #00c9a7 0%, #5a70d5 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px 12px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-header h2 {
+      font-size: 22px;
+      font-weight: 600;
+    }
+    
+    .close-modal {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+    
+    .close-modal:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .modal-body {
+      padding: 25px;
+    }
+    
+    .student-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .info-item {
+      margin-bottom: 15px;
+    }
+    
+    .info-label {
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 5px;
+    }
+    
+    .info-value {
+      color: #333;
+    }
+    
+    .attendance-history {
+      margin-top: 20px;
+    }
+    
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    
+    .history-table th {
+      background: #f8f9fa;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #444;
+      border-bottom: 2px solid #eee;
+    }
+    
+    .history-table td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .history-table tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+    
+    .status-present {
+      color: #00c9a7;
+      font-weight: 600;
+    }
+    
+    .status-absent {
+      color: #ff6b6b;
+      font-weight: 600;
+    }
+    
+    .search-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .search-input {
+      flex: 1;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+    }
+    
+    .status-message {
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 15px;
+      text-align: center;
+      display: none;
+    }
+    
+    .status-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .status-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .user-info {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      
+      .form-row {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .student-list-header, .student-item {
+        grid-template-columns: 60px 1fr 70px 90px;
+        gap: 10px;
+        padding: 12px;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+      
+      .student-info {
+        grid-template-columns: 1fr;
+      }
+      
+      .modal-content {
+        width: 95%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><i class="fas fa-chalkboard-teacher"></i> Teacher Dashboard</h1>
+      <div class="date-display" id="currentDateTime">
+        <div class="time" id="currentTime">Loading...</div>
+        <div class="date" id="currentDate">Loading...</div>
+      </div>
+      <div class="user-info">
+        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='40' r='30' fill='%2300c9a7'/><circle cx='50' cy='100' r='40' fill='%235a70d5'/></svg>" alt="Teacher">
+        <span id="teacherName">Loading...</span>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="card">
+        <div class="card-header">
+          <span>Class Information</span>
+        </div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="branch"><i class="fas fa-code-branch"></i> Branch</label>
+              <select class="form-control" id="branch">
+                <option value="">-- Select Branch --</option>
+                <option value="CSE">Computer Science</option>
+                <option value="ECE">Electronics & Communication</option>
+                <option value="ME">Mechanical Engineering</option>
+                <option value="CE">Civil Engineering</option>
+                <option value="EE">Electrical Engineering</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="section"><i class="fas fa-users"></i> Section</label>
+              <select class="form-control" id="section">
+                <option value="">-- Select Section --</option>
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="C">Section C</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="subject"><i class="fas fa-book"></i> Subject</label>
+              <select class="form-control" id="subject">
+                <option value="">-- Select Subject --</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Compiler Design">Compiler Design</option>
+                <option value="FLAT">FLAT</option>
+                <option value="OS">Operating System</option>
+                <option value="COA">Computer Organization & Architecture</option>
+                <option value="Software Engineering">Software Engineering</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="classStartTime"><i class="fas fa-clock"></i> Start Time</label>
+              <input type="time" class="form-control" id="classStartTime" value="09:00">
+            </div>
+            
+            <div class="form-group">
+              <label for="classEndTime"><i class="fas fa-clock"></i> End Time</label>
+              <input type="time" class="form-control" id="classEndTime" value="10:00">
+            </div>
+            
+            <div class="form-group">
+              <label for="periodNumber"><i class="fas fa-list-ol"></i> Period Number</label>
+              <select class="form-control" id="periodNumber">
+                <option value="1">Period 1</option>
+                <option value="2">Period 2</option>
+                <option value="3">Period 3</option>
+                <option value="4">Period 4</option>
+                <option value="5">Period 5</option>
+                <option value="6">Period 6</option>
+              </select>
+            </div>
+          </div>
+          
+          <button class="btn btn-primary" onclick="loadStudents()">
+            <i class="fas fa-sync-alt"></i> Load Students
+          </button>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <span>Student Attendance</span>
+          <div class="search-container">
+            <div class="form-group search-input">
+              <input type="text" class="form-control" id="searchRollNo" placeholder="Enter Roll No to search...">
+            </div>
+            <button class="btn btn-info" onclick="searchStudent()">
+              <i class="fas fa-search"></i> Search
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="student-list-container">
+            <div class="student-list-header">
+              <div>Roll No.</div>
+              <div>Student Name</div>
+              <div>Present</div>
+              <div>Actions</div>
+            </div>
+            
+            <div class="student-list" id="studentList">
+              <div class="loading" id="loadingStudents">
+                <i class="fas fa-spinner fa-spin"></i> Select branch, section and click "Load Students"
+              </div>
+            </div>
+          </div>
+          
+          <div class="action-buttons">
+            <button class="btn btn-secondary" onclick="selectAll()">
+              <i class="fas fa-check-square"></i> Select All
+            </button>
+            <button class="btn btn-primary" onclick="submitAttendance()">
+              <i class="fas fa-paper-plane"></i> Submit Attendance
+            </button>
+            <a href="qr-attendance.html" class="btn btn-secondary">
+              <i class="fas fa-qrcode"></i> QR Attendance
+            </a>
+            <button class="btn btn-outline" onclick="clearSelection()">
+              <i class="fas fa-times"></i> Clear Selection
+            </button>
+            <button class="btn btn-logout" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+          </div>
+          
+          <div class="attendance-summary" id="attendanceSummary">
+            <div class="summary-card present">
+              <div class="summary-label">PRESENT</div>
+              <div class="summary-value" id="presentCount">0</div>
+              <div class="summary-label">students</div>
+            </div>
+            <div class="summary-card absent">
+              <div class="summary-label">ABSENT</div>
+              <div class="summary-value" id="absentCount">0</div>
+              <div class="summary-label">students</div>
+            </div>
+          </div>
+          
+          <div class="status-message" id="statusMessage"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>TAT Attendance Management System © 2023 | Teacher Dashboard</p>
+    </div>
+  </div>
+
+  <!-- Student Details Modal -->
+  <div class="modal-overlay" id="studentModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-user-graduate"></i> Student Details</h2>
+        <button class="close-modal" onclick="closeStudentModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="student-info">
+          <div>
+            <div class="info-item">
+              <div class="info-label">Roll Number</div>
+              <div class="info-value" id="modalRollNo">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Full Name</div>
+              <div class="info-value" id="modalName">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Email</div>
+              <div class="info-value" id="modalEmail">-</div>
+            </div>
+          </div>
+          <div>
+            <div class="info-item">
+              <div class="info-label">Branch</div>
+              <div class="info-value" id="modalBranch">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Section</div>
+              <div class="info-value" id="modalSection">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Semester</div>
+              <div class="info-value" id="modalSemester">-</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="attendance-history">
+          <h3><i class="fas fa-history"></i> Attendance History</h3>
+          <table class="history-table" id="historyTable">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Subject</th>
+                <th>Status</th>
+                <th>Period</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody">
+              <!-- History rows will be added here -->
+            </tbody>
+          </table>
+          <div id="noHistory" style="text-align: center; padding: 20px; color: #777; display: none;">
+            <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 15px;"></i>
+            <p>No attendance history found for this student.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getDatabase, ref, get, set, push } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+  import { saveAttendance } from './firebase.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCe0DvO_8prqSxzzr7A8AfiGyOqqj-_DP4",
+    authDomain: "attendance-67f62.firebaseapp.com",
+    databaseURL: "https://attendance-67f62-default-rtdb.firebaseio.com",
+    projectId: "attendance-67f62",
+    storageBucket: "attendance-67f62.firebasestorage.app",
+    messagingSenderId: "459244634281",
+    appId: "1:459244634281:web:e8630366dc5cfe31dca9b8",
+    measurementId: "G-RM00FSG6Q9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // Global variables
+  let currentStudents = [];
+  let teacherData = {};
+
+  // Check if teacher is logged in
+  function checkTeacherAuth() {
+    const teacher = sessionStorage.getItem('teacher');
+    if (!teacher) {
+      window.location.href = 'teacher-login.html';
+      return null;
+    }
+    return JSON.parse(teacher);
+  }
+
+  // Update date and time in header
+  function updateDateTime() {
+    const now = new Date();
+    
+    // Format time
+    const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    const timeString = now.toLocaleTimeString('en-US', timeOptions);
+    
+    // Format date
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const dateString = now.toLocaleDateString('en-US', dateOptions);
+    
+    document.getElementById('currentTime').textContent = timeString;
+    document.getElementById('currentDate').textContent = dateString;
+  }
+
+  // Load students based on selected branch and section
+  async function loadStudents() {
+    const branch = document.getElementById("branch").value;
+    const section = document.getElementById("section").value;
+    
+    if (!branch || !section) {
+      showStatus("Please select both branch and section", "error");
+      return;
+    }
+
+    const studentListDiv = document.getElementById("studentList");
+    const loadingDiv = document.getElementById("loadingStudents");
+    
+    loadingDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading students...';
+    studentListDiv.innerHTML = '';
+    studentListDiv.appendChild(loadingDiv);
+    
+    try {
+      // Get all students from Firebase
+      const snapshot = await get(ref(db, 'students'));
+      
+      if (!snapshot.exists()) {
+        loadingDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> No students found in database';
+        return;
+      }
+
+      const allStudents = snapshot.val();
+      currentStudents = [];
+      
+      // Filter students by branch and section
+      for (const key in allStudents) {
+        const student = allStudents[key];
+        if (student.branch === branch && student.section === section) {
+          currentStudents.push({
+            ...student,
+            id: key // Store the Firebase key for reference
+          });
+        }
+      }
+      
+      if (currentStudents.length === 0) {
+        loadingDiv.innerHTML = `<i class="fas fa-users"></i> No students found in ${branch} - Section ${section}`;
+        return;
+      }
+      
+      // Render student list
+      renderStudentList();
+      
+    } catch (error) {
+      console.error("Error loading students:", error);
+      loadingDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error loading students';
+      showStatus("Error loading students: " + error.message, "error");
+    }
+  }
+
+  function renderStudentList() {
+    const studentListDiv = document.getElementById("studentList");
+    studentListDiv.innerHTML = '';
+    
+    currentStudents.forEach((student, index) => {
+      const div = document.createElement("div");
+      div.classList.add("student-item");
+      div.innerHTML = `
+        <div>${student.rollNo}</div>
+        <div>${student.name}</div>
+        <div>
+          <input type="checkbox" class="attendance-checkbox" id="student${index}" onchange="updateSummary()">
+        </div>
+        <div>
+          <button class="btn btn-outline" style="padding: 8px 12px;" onclick="viewStudentDetails('${student.id}')">
+            <i class="fas fa-eye"></i> Details
+          </button>
+        </div>
+      `;
+      studentListDiv.appendChild(div);
+    });
+    
+    updateSummary();
+  }
+
+  function updateSummary() {
+    let presentCount = 0;
+    currentStudents.forEach((_, index) => {
+      if (document.getElementById(`student${index}`)) {
+        if (document.getElementById(`student${index}`).checked) presentCount++;
+      }
+    });
+    document.getElementById('presentCount').textContent = presentCount;
+    document.getElementById('absentCount').textContent = currentStudents.length - presentCount;
+  }
+
+  function selectAll() {
+    currentStudents.forEach((_, index) => {
+      if (document.getElementById(`student${index}`)) {
+        document.getElementById(`student${index}`).checked = true;
+      }
+    });
+    updateSummary();
+  }
+
+  function clearSelection() {
+    currentStudents.forEach((_, index) => {
+      if (document.getElementById(`student${index}`)) {
+        document.getElementById(`student${index}`).checked = false;
+      }
+    });
+    updateSummary();
+  }
+
+  async function submitAttendance() {
+    const branch = document.getElementById("branch").value;
+    const section = document.getElementById("section").value;
+    const subject = document.getElementById("subject").value;
+    const classStartTime = document.getElementById("classStartTime").value;
+    const classEndTime = document.getElementById("classEndTime").value;
+    const periodNumber = document.getElementById("periodNumber").value;
+
+    if (!branch || !section || !subject || !classStartTime || !classEndTime) {
+      showStatus("Please fill in all class information fields before submitting attendance.", "error");
+      return;
+    }
+
+    if (currentStudents.length === 0) {
+      showStatus("No students loaded. Please load students first.", "error");
+      return;
+    }
+
+    // Prepare attendance data store in firebase
+    const attendanceData = currentStudents.map((student, index) => ({
+      studentId: student.id,
+      rollNo: student.rollNo,
+      name: student.name,
+      status: document.getElementById(`student${index}`).checked ? "Present" : "Absent",
+      timestamp: new Date().toISOString()
+    }));
+
+    const dateKey = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const classKey = `${branch}-${section}`;
+
+    try {
+      // Show loading state
+      showStatus("Saving attendance...", "success");
+      
+      // Save to Firebase using the function from firebase.js
+      const success = await saveAttendance(dateKey, classKey, {
+        subject,
+        classStartTime,
+        classEndTime,
+        period: periodNumber,
+        teacher: teacherData.name || "Unknown Teacher",
+        attendanceData
+      });
+
+      if (success) {
+        showStatus("✅ Attendance saved successfully to database!", "success");
+        
+        // Clear selection after successful submission
+        setTimeout(() => {
+          clearSelection();
+        }, 2000);
+      } else {
+        throw new Error("Failed to save attendance");
+      }
+    } catch (error) {
+      console.error("Error saving attendance:", error);
+      showStatus("❌ Failed to save attendance: " + error.message, "error");
+    }
+  }
+
+  async function viewStudentDetails(studentId) {
+    try {
+      // Get student details
+      const studentSnapshot = await get(ref(db, `students/${studentId}`));
+      
+      if (!studentSnapshot.exists()) {
+        alert("Student not found!");
+        return;
+      }
+
+      const student = studentSnapshot.val();
+
+      // Populate student info
+      document.getElementById('modalRollNo').textContent = student.rollNo;
+      document.getElementById('modalName').textContent = student.name;
+      document.getElementById('modalEmail').textContent = student.email || "N/A";
+      document.getElementById('modalBranch').textContent = student.branch;
+      document.getElementById('modalSection').textContent = student.section;
+      document.getElementById('modalSemester').textContent = student.semester || "N/A";
+
+      // Get attendance history for this student
+      const attendanceSnapshot = await get(ref(db, 'attendance'));
+      const historyBody = document.getElementById('historyBody');
+      const noHistory = document.getElementById('noHistory');
+      
+      historyBody.innerHTML = '';
+      
+      if (attendanceSnapshot.exists()) {
+        const allAttendance = attendanceSnapshot.val();
+        let historyEntries = [];
+        
+        // Collect all attendance records for this student
+        for (const date in allAttendance) {
+          for (const classKey in allAttendance[date]) {
+            const records = allAttendance[date][classKey];
+            for (const recordId in records) {
+              const record = records[recordId];
+              if (record.attendanceData) {
+                const studentRecord = record.attendanceData.find(
+                  s => s.studentId === studentId
+                );
+                if (studentRecord) {
+                  historyEntries.push({
+                    date: date,
+                    subject: record.subject,
+                    status: studentRecord.status,
+                    period: record.period || "N/A"
+                  });
+                }
+              }
+            }
+          }
+        }
+        
+        if (historyEntries.length > 0) {
+          // Sort by date (newest first)
+          historyEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
+          
+          // Display up to 10 most recent records
+          historyEntries.slice(0, 10).forEach(entry => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${entry.date}</td>
+              <td>${entry.subject}</td>
+              <td class="${entry.status === 'Present' ? 'status-present' : 'status-absent'}">${entry.status}</td>
+              <td>${entry.period}</td>
+            `;
+            historyBody.appendChild(row);
+          });
+          
+          historyBody.style.display = 'table-row-group';
+          noHistory.style.display = 'none';
+        } else {
+          historyBody.style.display = 'none';
+          noHistory.style.display = 'block';
+        }
+      } else {
+        historyBody.style.display = 'none';
+        noHistory.style.display = 'block';
+      }
+
+      // Show modal
+      document.getElementById('studentModal').style.display = 'flex';
+    } catch (error) {
+      console.error("Error loading student details:", error);
+      alert("Error loading student details");
+    }
+  }
+
+  function closeStudentModal() {
+    document.getElementById('studentModal').style.display = 'none';
+  }
+
+  function searchStudent() {
+    const searchValue = document.getElementById('searchRollNo').value.trim().toUpperCase();
+    if (!searchValue) {
+      showStatus("Please enter a roll number to search.", "error");
+      return;
+    }
+
+    const student = currentStudents.find(s => s.rollNo === searchValue);
+    if (student) {
+      viewStudentDetails(student.id);
+    } else {
+      showStatus("Student with roll number " + searchValue + " not found in current list.", "error");
+    }
+  }
+
+  function showStatus(message, type) {
+    const statusMessage = document.getElementById('statusMessage');
+    statusMessage.textContent = message;
+    statusMessage.className = `status-message status-${type}`;
+    statusMessage.style.display = 'block';
+    
+    // Auto hide after 5 seconds for success messages
+    if (type === 'success') {
+      setTimeout(() => {
+        statusMessage.style.display = 'none';
+      }, 5000);
+    }
+  }
+
+  function logout() {
+    sessionStorage.removeItem('teacher');
+    window.location.href = 'index.html';
+  }
+
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    // Check authentication
+    teacherData = checkTeacherAuth();
+    if (!teacherData) return;
+    
+    // Display teacher name
+    document.getElementById('teacherName').textContent = teacherData.name || teacherData.email;
+    
+    // Update date/time immediately and set interval
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+    
+    // Set default values
+    const now = new Date();
+    document.getElementById('classStartTime').value = '09:00';
+    document.getElementById('classEndTime').value = '10:00';
+    
+    // Allow Enter key to trigger search
+    document.getElementById('searchRollNo').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        searchStudent();
+      }
+    });
+    
+    // Close modal when clicking outside
+    document.getElementById('studentModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeStudentModal();
+      }
+    });
+  });
+
+  // Expose functions globally for HTML onclick handlers
+  window.loadStudents = loadStudents;
+  window.selectAll = selectAll;
+  window.clearSelection = clearSelection;
+  window.updateSummary = updateSummary;
+  window.submitAttendance = submitAttendance;
+  window.viewStudentDetails = viewStudentDetails;
+  window.closeStudentModal = closeStudentModal;
+  window.searchStudent = searchStudent;
+  window.logout = logout;
+</script>
+
+</body>
+</html>
